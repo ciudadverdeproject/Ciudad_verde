@@ -14,47 +14,25 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 
     <style>
+        /* (El CSS se mantiene exactamente igual que en tu última versión) */
         :root {
-            --primary: #2D6A4F;
-            --primary-light: #52B788;
-            --accent: #F77F00;
-            --info: #118AB2;
-            --bg-body: #F8F9FA;
-            --bg-card: #FFFFFF;
-            --text-main: #1E293B;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
-            --shadow-md: 0 10px 25px -3px rgba(0,0,0,0.08);
-            --shadow-lg: 0 20px 40px -5px rgba(0,0,0,0.1);
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #2D6A4F; --primary-light: #52B788; --accent: #F77F00; --info: #118AB2;
+            --bg-body: #F8F9FA; --bg-card: #FFFFFF; --text-main: #1E293B; --text-muted: #64748B;
+            --border: #E2E8F0; --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -3px rgba(0,0,0,0.08); --shadow-lg: 0 20px 40px -5px rgba(0,0,0,0.1);
+            --radius-md: 16px; --radius-lg: 24px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        [data-bs-theme="dark"] {
-            --bg-body: #0F172A;
-            --bg-card: #1E293B;
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
-            --border: #334155;
-            --primary: #52B788;
-            --primary-light: #74C69D;
-            --accent: #FB923C;
-        }
-
+        [data-bs-theme="dark"] { --bg-body: #0F172A; --bg-card: #1E293B; --text-main: #F8FAFC; --text-muted: #94A3B8; --border: #334155; --primary: #52B788; --primary-light: #74C69D; --accent: #FB923C; }
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg-body); color: var(--text-main); overflow-x: hidden; transition: background-color 0.3s, color 0.3s; }
         h1, h2, h3, .brand-font { font-family: 'Manrope', sans-serif; font-weight: 800; letter-spacing: -0.5px; }
         button, a { -webkit-tap-highlight-color: transparent; }
         button { cursor: pointer; border: none; outline: none; }
-
         .container { max-width: 1280px; padding-left: 1.25rem; padding-right: 1.25rem; margin-left: auto; margin-right: auto; }
         @media (min-width: 768px) { .container { padding-left: 3rem; padding-right: 3rem; } }
         .section { padding: 30px 0; }
         @media (min-width: 768px) { .section { padding: 60px 0; } }
-
-        /* --- HEADER --- */
         header { position: sticky; top: 0; z-index: 1000; background: rgba(var(--bg-card), 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
         .header-content { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.25rem; gap: 12px; }
         @media (min-width: 768px) { .header-content { height: 72px; padding: 0 2.5rem; gap: 20px; } }
@@ -75,8 +53,6 @@
         @media (min-width: 768px) { .btn-profile { width: 40px; height: 40px; font-size: 14px; } }
         .btn-theme { background: var(--bg-body); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; color: var(--text-main); transition: var(--transition); flex-shrink: 0; }
         @media (min-width: 768px) { .btn-theme { width: 40px; height: 40px; font-size: 18px; } }
-
-        /* --- HERO --- */
         .hero { background: linear-gradient(135deg, #F0FDF4 0%, var(--bg-body) 100%); padding: 30px 0 25px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
         @media (min-width: 768px) { .hero { padding: 80px 0 60px; } }
         [data-bs-theme="dark"] .hero { background: linear-gradient(135deg, #1E293B 0%, var(--bg-body) 100%); }
@@ -93,8 +69,6 @@
         @media (min-width: 768px) { .hero-visual h3 { font-size: 28px; margin-bottom: 10px; } }
         .hero-visual p { opacity: 0.9; font-size: 12px; line-height: 1.5; }
         @media (min-width: 768px) { .hero-visual p { font-size: 14px; } }
-
-        /* --- STATS --- */
         .quick-stats { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 16px; position: relative; z-index: 10; }
         @media (min-width: 768px) { .quick-stats { grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: -30px; } }
         .stat-card { background: var(--bg-card); border-radius: var(--radius-md); padding: 14px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-md); border: 1px solid var(--border); transition: var(--transition); }
@@ -105,16 +79,12 @@
         @media (min-width: 768px) { .stat-info strong { font-size: 24px; } }
         .stat-info span { font-size: 9px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         @media (min-width: 768px) { .stat-info span { font-size: 12px; } }
-
-        /* --- SECCIONES --- */
         .section-header { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 16px; gap: 10px; }
         @media (min-width: 768px) { .section-header { flex-direction: row; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; } }
         .section-header h2 { font-size: 22px; color: var(--text-main); }
         @media (min-width: 768px) { .section-header h2 { font-size: 32px; } }
         .section-header p { color: var(--text-muted); margin-top: 4px; font-size: 13px; }
         @media (min-width: 768px) { .section-header p { font-size: 15px; } }
-
-        /* --- MAPA --- */
         .map-layout { display: grid; grid-template-columns: 1fr; gap: 12px; height: auto; }
         @media (min-width: 992px) { .map-layout { grid-template-columns: 1.5fr 1fr; gap: 24px; height: 600px; } }
         .map-container { background: var(--bg-card); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border); height: 320px; }
@@ -123,8 +93,6 @@
         #map { width: 100%; height: 100%; z-index: 1; }
         .side-panel { display: none; }
         @media (min-width: 992px) { .side-panel { display: flex; flex-direction: column; overflow-y: auto; } }
-
-        /* --- BOTONES --- */
         .btn { padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: var(--transition); text-decoration: none; }
         @media (min-width: 768px) { .btn { padding: 12px 20px; border-radius: 12px; font-size: 14px; gap: 8px; } }
         .btn-primary { background: var(--primary); color: white; }
@@ -132,8 +100,6 @@
         .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
         .btn-block { width: 100%; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* --- TARJETAS --- */
         .events-grid, .markets-grid, .rewards-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 16px; }
         @media (min-width: 576px) { .events-grid, .markets-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 992px) { .events-grid, .markets-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px; } }
@@ -150,19 +116,14 @@
         @media (min-width: 768px) { .event-info h3, .market-info h3 { font-size: 18px; } }
         .event-info p, .market-info p { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; flex: 1; }
         @media (min-width: 768px) { .event-info p, .market-info p { font-size: 13px; } }
-
-        /* --- MODAL --- */
         .modal-content { background: var(--bg-card); border: none; border-radius: var(--radius-lg); }
         .modal-body { padding: 16px; }
         @media (min-width: 768px) { .modal-body { padding: 20px; } }
         .upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; position: relative; background: var(--bg-body); }
         .upload-zone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         .upload-preview { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; display: none; margin-top: 12px; border: 1px solid var(--border); }
-
-        /* --- TOAST --- */
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text-main); color: var(--bg-card); padding: 12px 20px; border-radius: 50px; font-weight: 500; font-size: 13px; opacity: 0; pointer-events: none; transition: var(--transition); z-index: 3000; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; max-width: 90%; text-align: center; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(45, 106, 79, 0); } 100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); } }
         .pulse-marker { animation: pulse 2s infinite; }
         .custom-marker { background: var(--bg-card); border: 3px solid var(--primary); border-radius: 50% 50% 50% 0; width: 34px; height: 34px; display: grid; place-items: center; font-size: 15px; transform: rotate(-45deg); box-shadow: var(--shadow-md); }
@@ -355,30 +316,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <!-- CARGA DEL CONFIG (Solo MapTiler) -->
+    <script src="config.js"></script>
 
     <script>
-        // --- CARGADOR DE .ENV ---
-        // Esta función lee el archivo .env y extrae las variables para usarlas en el código.
-        async function loadEnv() {
-            try {
-                const response = await fetch('./.env');
-                if (!response.ok) throw new Error('No se encontró el archivo .env');
-                const text = await response.text();
-                const env = {};
-                text.split('\n').forEach(line => {
-                    const [key, value] = line.split('=');
-                    if (key && value) env[key.trim()] = value.trim();
-                });
-                return env;
-            } catch (error) {
-                console.warn('No se pudo cargar el .env, usando valores por defecto.', error);
-                return {};
-            }
-        }
-
-        // --- VARIABLES GLOBALES (Se llenan al cargar el .env) ---
-        let MAPTILER_API_KEY = '';
-        let GEMINI_API_KEY = '';
+        // --- 1. CONFIGURACIÓN SEGURA ---
+        const MAPTILER_API_KEY = window.ENV?.MAPTILER_API_KEY || '';
+        
+        // ⚠️ IMPORTANTE: Pega aquí la URL que te dio Cloudflare al crear el Worker
+        const WORKER_URL = 'https://proxy-gemini.elbaibi323.workers.dev/'; 
 
         // --- 2. DATOS ---
         const places = [
@@ -448,7 +395,7 @@
 
         function initMap() {
             if (!MAPTILER_API_KEY) {
-                $('map').innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;"><p>No se encontró la clave de MapTiler en el archivo .env</p></div>`;
+                $('map').innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;"><p>No se encontró la clave de MapTiler en config.js</p></div>`;
                 return;
             }
             state.map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([-33.511, -70.758], 14);
@@ -512,8 +459,8 @@
 
         window.registerEvent = (id) => { if (state.registered.includes(id)) return; state.registered.push(id); save(); bootstrap.Modal.getInstance($('genericModal'))?.hide(); showToast('🎉 ¡Inscrito!'); };
 
+        // --- VALIDACIÓN DE EVENTO USANDO EL WORKER ---
         async function validateEventPhoto(eventId) {
-            if (!GEMINI_API_KEY) { showToast('⚠️ No se encontró la API Key de Gemini en el .env'); return; }
             const fileInput = $(`eventPhotoInput-${eventId}`);
             if (!fileInput.files.length) return;
             const file = fileInput.files[0];
@@ -524,7 +471,8 @@
             const event = events.find(e => e.id === eventId);
             try {
                 const base64Data = await fileToBase64(file);
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${GEMINI_API_KEY}`, {
+                // Llamamos al WORKER_URL en lugar de Google directamente
+                const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza esta imagen. ¿Es una foto tomada en ${event.placeName} durante el evento "${event.title}"? Responde solo "SI" o "NO" y una breve explicación.` }, { inline_data: { mime_type: file.type, data: base64Data.split(',')[1] } }] }] })
@@ -540,12 +488,12 @@
                         btn.disabled = false; btn.textContent = 'Intentar de nuevo';
                     }
                 } else {
-                    const errMsg = data.error?.message || 'Respuesta inesperada de Gemini.';
-                    statusEl.textContent = `⚠️ Error de API: ${errMsg.substring(0, 100)}`; statusEl.style.color = '#DC2626';
+                    const errMsg = data.error?.message || 'Respuesta inesperada del Proxy.';
+                    statusEl.textContent = `⚠️ Error del Proxy: ${errMsg.substring(0, 100)}`; statusEl.style.color = '#DC2626';
                     btn.disabled = false; btn.textContent = 'Reintentar';
                 }
             } catch (error) {
-                statusEl.textContent = `⚠️ Error de red o clave inválida. ${error.message.substring(0, 80)}`; statusEl.style.color = '#DC2626';
+                statusEl.textContent = `⚠️ Error de red. ${error.message.substring(0, 80)}`; statusEl.style.color = '#DC2626';
                 btn.disabled = false; btn.textContent = 'Reintentar';
             }
         }
@@ -575,8 +523,8 @@
             });
         };
 
+        // --- VALIDACIÓN DE MISIÓN USANDO EL WORKER ---
         async function validateMissionWithGemini(missionId) {
-            if (!GEMINI_API_KEY) { showToast('⚠️ No se encontró la API Key de Gemini en el .env'); return; }
             const fileInput = $('missionPhotoInput'); if (!fileInput.files.length) return;
             const file = fileInput.files[0]; const statusEl = $('geminiStatus'); const btn = $('btnValidateMission');
             btn.disabled = true; btn.textContent = 'Validando...'; statusEl.textContent = '🧠 Analizando...'; statusEl.style.color = 'var(--text-muted)';
@@ -584,7 +532,8 @@
             const placeName = missionId === 'move' ? 'una plaza deportiva de Maipú' : missionId === 'culture' ? 'un centro cultural de Maipú' : 'un área verde de Maipú';
             try {
                 const base64Data = await fileToBase64(file);
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${GEMINI_API_KEY}`, {
+                // Llamamos al WORKER_URL en lugar de Google directamente
+                const response = await fetch(WORKER_URL, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza esta imagen. ¿Es una foto tomada en ${placeName} realizando "${mission.title}"? Responde solo "SI" o "NO" y una breve explicación.` }, { inline_data: { mime_type: file.type, data: base64Data.split(',')[1] } }] }] })
                 });
@@ -600,7 +549,7 @@
                     }
                 } else {
                     const errMsg = data.error?.message || 'Error desconocido.';
-                    statusEl.textContent = `⚠️ Error API: ${errMsg.substring(0, 100)}`; statusEl.style.color = '#DC2626';
+                    statusEl.textContent = `⚠️ Error del Proxy: ${errMsg.substring(0, 100)}`; statusEl.style.color = '#DC2626';
                     btn.disabled = false; btn.textContent = 'Reintentar';
                 }
             } catch (error) {
@@ -661,14 +610,8 @@
 
         window.scrollToSection = (id) => { bootstrap.Modal.getInstance($('genericModal'))?.hide(); document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
 
-        // --- INICIALIZACIÓN (ESPERA AL .ENV) ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            // 1. Cargamos el .env
-            const env = await loadEnv();
-            MAPTILER_API_KEY = env.VITE_MAPTILER_API_KEY || '';
-            GEMINI_API_KEY = env.VITE_GEMINI_API_KEY || '';
-            
-            // 2. Iniciamos la app
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 updateUI();
                 initMap();
