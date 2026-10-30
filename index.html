@@ -54,114 +54,26 @@
         .section { padding: 30px 0; }
         @media (min-width: 768px) { .section { padding: 60px 0; } }
 
-        /* --- HEADER MÓVIL CORREGIDO --- */
+        /* --- HEADER --- */
         header { position: sticky; top: 0; z-index: 1000; background: rgba(var(--bg-card), 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-        .header-content { 
-            height: 64px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            padding: 0 1.25rem; 
-            gap: 12px;
-        }
+        .header-content { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.25rem; gap: 12px; }
         @media (min-width: 768px) { .header-content { height: 72px; padding: 0 2.5rem; gap: 20px; } }
-
-        .logo { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            text-decoration: none; 
-            color: var(--primary); 
-            font-size: 15px; 
-            font-weight: 800; 
-            flex-shrink: 0;
-            min-width: 0;
-        }
-        .logo-icon { 
-            width: 34px; 
-            height: 34px; 
-            background: var(--primary); 
-            color: white; 
-            border-radius: 10px; 
-            display: grid; 
-            place-items: center; 
-            font-size: 17px; 
-            box-shadow: var(--shadow-sm); 
-            flex-shrink: 0;
-        }
-        .logo-text { 
-            display: flex; 
-            flex-direction: column; 
-            line-height: 1.15; 
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .logo-text span { 
-            font-size: 7px; 
-            color: var(--text-muted); 
-            letter-spacing: 0.8px; 
-            text-transform: uppercase; 
-            margin-top: 1px; 
-            font-weight: 600;
-        }
-        @media (min-width: 768px) {
-            .logo { font-size: 20px; gap: 12px; }
-            .logo-icon { width: 42px; height: 42px; border-radius: 12px; font-size: 21px; }
-            .logo-text span { font-size: 10px; letter-spacing: 1.2px; margin-top: 2px; }
-        }
-
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--primary); font-size: 15px; font-weight: 800; flex-shrink: 0; min-width: 0; }
+        .logo-icon { width: 34px; height: 34px; background: var(--primary); color: white; border-radius: 10px; display: grid; place-items: center; font-size: 17px; box-shadow: var(--shadow-sm); flex-shrink: 0; }
+        .logo-text { display: flex; flex-direction: column; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .logo-text span { font-size: 7px; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 1px; font-weight: 600; }
+        @media (min-width: 768px) { .logo { font-size: 20px; gap: 12px; } .logo-icon { width: 42px; height: 42px; border-radius: 12px; font-size: 21px; } .logo-text span { font-size: 10px; letter-spacing: 1.2px; margin-top: 2px; } }
         .nav-links { display: none; gap: 24px; }
         @media (min-width: 992px) { .nav-links { display: flex; } }
         .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 14px; transition: var(--transition); }
         .nav-links a:hover { color: var(--primary); font-weight: 700; }
-
         .header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
         @media (min-width: 768px) { .header-actions { gap: 12px; } }
-
-        .points-badge { 
-            background: #FFF7ED; 
-            color: #C2410C; 
-            padding: 5px 10px; 
-            border-radius: 50px; 
-            font-weight: 700; 
-            font-size: 11px; 
-            display: flex; 
-            align-items: center; 
-            gap: 4px; 
-            border: 1px solid #FFEDD5; 
-            white-space: nowrap;
-        }
+        .points-badge { background: #FFF7ED; color: #C2410C; padding: 5px 10px; border-radius: 50px; font-weight: 700; font-size: 11px; display: flex; align-items: center; gap: 4px; border: 1px solid #FFEDD5; white-space: nowrap; }
         @media (min-width: 768px) { .points-badge { padding: 8px 16px; font-size: 14px; gap: 6px; } }
-
-        .btn-profile { 
-            background: #D1FAE5; 
-            color: #065F46; 
-            width: 32px; 
-            height: 32px; 
-            border-radius: 50%; 
-            font-weight: 800; 
-            font-size: 12px; 
-            display: grid; 
-            place-items: center; 
-            transition: var(--transition); 
-            flex-shrink: 0;
-        }
+        .btn-profile { background: #D1FAE5; color: #065F46; width: 32px; height: 32px; border-radius: 50%; font-weight: 800; font-size: 12px; display: grid; place-items: center; transition: var(--transition); flex-shrink: 0; }
         @media (min-width: 768px) { .btn-profile { width: 40px; height: 40px; font-size: 14px; } }
-
-        .btn-theme { 
-            background: var(--bg-body); 
-            border: 1px solid var(--border); 
-            width: 32px; 
-            height: 32px; 
-            border-radius: 50%; 
-            display: grid; 
-            place-items: center; 
-            font-size: 14px; 
-            color: var(--text-main); 
-            transition: var(--transition); 
-            flex-shrink: 0;
-        }
+        .btn-theme { background: var(--bg-body); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; color: var(--text-main); transition: var(--transition); flex-shrink: 0; }
         @media (min-width: 768px) { .btn-theme { width: 40px; height: 40px; font-size: 18px; } }
 
         /* --- HERO --- */
@@ -363,10 +275,7 @@
                 <button class="btn btn-outline filter-btn" data-filter="Arte" style="padding: 6px 12px; font-size: 11px;">🎨 Arte</button>
             </div>
         </div>
-        <div class="events-grid" id="eventsGrid">
-            <div class="event-card"><div class="skeleton" style="height: 130px;"></div><div style="padding: 14px;"><div class="skeleton" style="height: 16px; width: 40%; margin-bottom: 8px;"></div><div class="skeleton" style="height: 20px; width: 80%;"></div></div></div>
-            <div class="event-card"><div class="skeleton" style="height: 130px;"></div><div style="padding: 14px;"><div class="skeleton" style="height: 16px; width: 40%; margin-bottom: 8px;"></div><div class="skeleton" style="height: 20px; width: 80%;"></div></div></div>
-        </div>
+        <div class="events-grid" id="eventsGrid"></div>
     </section>
 
     <section class="section container" id="misiones">
@@ -448,9 +357,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
-        // --- 1. CONFIGURACIÓN DE CLAVES ---
-        const MAPTILER_API_KEY = '91TB9wq2KleQJBa3B2CA';
-        const GEMINI_API_KEY = 'AQ.Ab8RN6KAc1P-NaqmT8VIrwK0Ez3QRij-2x-lo-ZXmAXtu5kVSQ'; // Reemplaza con tu clave de Google AI Studio (empieza con AIza...)
+        // --- CARGADOR DE .ENV ---
+        // Esta función lee el archivo .env y extrae las variables para usarlas en el código.
+        async function loadEnv() {
+            try {
+                const response = await fetch('./.env');
+                if (!response.ok) throw new Error('No se encontró el archivo .env');
+                const text = await response.text();
+                const env = {};
+                text.split('\n').forEach(line => {
+                    const [key, value] = line.split('=');
+                    if (key && value) env[key.trim()] = value.trim();
+                });
+                return env;
+            } catch (error) {
+                console.warn('No se pudo cargar el .env, usando valores por defecto.', error);
+                return {};
+            }
+        }
+
+        // --- VARIABLES GLOBALES (Se llenan al cargar el .env) ---
+        let MAPTILER_API_KEY = '';
+        let GEMINI_API_KEY = '';
 
         // --- 2. DATOS ---
         const places = [
@@ -519,8 +447,8 @@
         }
 
         function initMap() {
-            if (!MAPTILER_API_KEY || MAPTILER_API_KEY === 'TU_API_KEY_DE_MAPTILER') {
-                $('map').innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;"><p>Configura tu clave de MapTiler.</p></div>`;
+            if (!MAPTILER_API_KEY) {
+                $('map').innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;"><p>No se encontró la clave de MapTiler en el archivo .env</p></div>`;
                 return;
             }
             state.map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([-33.511, -70.758], 14);
@@ -584,12 +512,8 @@
 
         window.registerEvent = (id) => { if (state.registered.includes(id)) return; state.registered.push(id); save(); bootstrap.Modal.getInstance($('genericModal'))?.hide(); showToast('🎉 ¡Inscrito!'); };
 
-        // --- VALIDACIÓN CON GEMINI 3.1 FLASH LITE ---
         async function validateEventPhoto(eventId) {
-            if (!GEMINI_API_KEY || GEMINI_API_KEY === 'TU_API_KEY_DE_GEMINI') {
-                showToast('⚠️ Configura tu API Key de Gemini (empieza con AIza...).');
-                return;
-            }
+            if (!GEMINI_API_KEY) { showToast('⚠️ No se encontró la API Key de Gemini en el .env'); return; }
             const fileInput = $(`eventPhotoInput-${eventId}`);
             if (!fileInput.files.length) return;
             const file = fileInput.files[0];
@@ -616,7 +540,6 @@
                         btn.disabled = false; btn.textContent = 'Intentar de nuevo';
                     }
                 } else {
-                    // Mostrar error detallado de la API
                     const errMsg = data.error?.message || 'Respuesta inesperada de Gemini.';
                     statusEl.textContent = `⚠️ Error de API: ${errMsg.substring(0, 100)}`; statusEl.style.color = '#DC2626';
                     btn.disabled = false; btn.textContent = 'Reintentar';
@@ -653,7 +576,7 @@
         };
 
         async function validateMissionWithGemini(missionId) {
-            if (!GEMINI_API_KEY || GEMINI_API_KEY === 'TU_API_KEY_DE_GEMINI') { showToast('⚠️ Configura tu API Key de Gemini.'); return; }
+            if (!GEMINI_API_KEY) { showToast('⚠️ No se encontró la API Key de Gemini en el .env'); return; }
             const fileInput = $('missionPhotoInput'); if (!fileInput.files.length) return;
             const file = fileInput.files[0]; const statusEl = $('geminiStatus'); const btn = $('btnValidateMission');
             btn.disabled = true; btn.textContent = 'Validando...'; statusEl.textContent = '🧠 Analizando...'; statusEl.style.color = 'var(--text-muted)';
@@ -738,7 +661,19 @@
 
         window.scrollToSection = (id) => { bootstrap.Modal.getInstance($('genericModal'))?.hide(); document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
 
-        document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { updateUI(); initMap(); }, 600); });
+        // --- INICIALIZACIÓN (ESPERA AL .ENV) ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Cargamos el .env
+            const env = await loadEnv();
+            MAPTILER_API_KEY = env.VITE_MAPTILER_API_KEY || '';
+            GEMINI_API_KEY = env.VITE_GEMINI_API_KEY || '';
+            
+            // 2. Iniciamos la app
+            setTimeout(() => {
+                updateUI();
+                initMap();
+            }, 600);
+        });
     </script>
 </body>
 </html>
