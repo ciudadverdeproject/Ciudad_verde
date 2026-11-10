@@ -14,78 +14,170 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 
     <style>
-        /* (El CSS se mantiene exactamente igual que en tu última versión) */
         :root {
-            --primary: #2D6A4F; --primary-light: #52B788; --accent: #F77F00; --info: #118AB2;
-            --bg-body: #F8F9FA; --bg-card: #FFFFFF; --text-main: #1E293B; --text-muted: #64748B;
-            --border: #E2E8F0; --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
-            --shadow-md: 0 10px 25px -3px rgba(0,0,0,0.08); --shadow-lg: 0 20px 40px -5px rgba(0,0,0,0.1);
-            --radius-md: 16px; --radius-lg: 24px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #2D6A4F;
+            --primary-light: #52B788;
+            --accent: #F77F00;
+            --accent-2: #EF476F;
+            --info: #118AB2;
+            --vibrant: #06D6A0;
+            --yellow: #FFD166;
+            --bg-body: #F8F9FA;
+            --bg-card: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -3px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 40px -5px rgba(0,0,0,0.1);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        [data-bs-theme="dark"] { --bg-body: #0F172A; --bg-card: #1E293B; --text-main: #F8FAFC; --text-muted: #94A3B8; --border: #334155; --primary: #52B788; --primary-light: #74C69D; --accent: #FB923C; }
+        [data-bs-theme="dark"] {
+            --bg-body: #0F172A;
+            --bg-card: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border: #334155;
+            --primary: #52B788;
+            --primary-light: #74C69D;
+            --accent: #FB923C;
+        }
+
         * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg-body); color: var(--text-main); overflow-x: hidden; transition: background-color 0.3s, color 0.3s; }
         h1, h2, h3, .brand-font { font-family: 'Manrope', sans-serif; font-weight: 800; letter-spacing: -0.5px; }
         button, a { -webkit-tap-highlight-color: transparent; }
         button { cursor: pointer; border: none; outline: none; }
-        .container { max-width: 1280px; padding-left: 1.25rem; padding-right: 1.25rem; margin-left: auto; margin-right: auto; }
-        @media (min-width: 768px) { .container { padding-left: 3rem; padding-right: 3rem; } }
-        .section { padding: 30px 0; }
+
+        /* --- CONTENEDOR --- */
+        .container { max-width: 1280px; padding-left: 1.5rem; padding-right: 1.5rem; margin-left: auto; margin-right: auto; width: 100%; }
+        @media (min-width: 768px) { .container { padding-left: 2.5rem; padding-right: 2.5rem; } }
+        @media (min-width: 1200px) { .container { padding-left: 3rem; padding-right: 3rem; } }
+        .section { padding: 28px 0; }
         @media (min-width: 768px) { .section { padding: 60px 0; } }
-        header { position: sticky; top: 0; z-index: 1000; background: rgba(var(--bg-card), 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-        .header-content { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.25rem; gap: 12px; }
-        @media (min-width: 768px) { .header-content { height: 72px; padding: 0 2.5rem; gap: 20px; } }
+
+        /* Card destacada: margen exterior + interno correctos en móvil */
+        .section-highlight {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin: 24px auto;
+            width: calc(100% - 2rem);
+            max-width: 1220px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        @media (min-width: 768px) { .section-highlight { padding: 28px; width: calc(100% - 4rem); } }
+        @media (min-width: 1200px) { .section-highlight { width: 100%; max-width: 1216px; } }
+
+        /* --- HEADER --- */
+        header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+        [data-bs-theme="dark"] header { background: rgba(30,41,59,0.94); }
+        .header-content { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; gap: 6px; }
+        @media (min-width: 768px) { .header-content { height: 72px; padding: 0 2rem; gap: 16px; } }
         .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--primary); font-size: 15px; font-weight: 800; flex-shrink: 0; min-width: 0; }
-        .logo-icon { width: 34px; height: 34px; background: var(--primary); color: white; border-radius: 10px; display: grid; place-items: center; font-size: 17px; box-shadow: var(--shadow-sm); flex-shrink: 0; }
+        .logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--primary), var(--vibrant)); color: white; border-radius: 10px; display: grid; place-items: center; font-size: 17px; box-shadow: var(--shadow-sm); flex-shrink: 0; }
         .logo-text { display: flex; flex-direction: column; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .logo-text span { font-size: 7px; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 1px; font-weight: 600; }
         @media (min-width: 768px) { .logo { font-size: 20px; gap: 12px; } .logo-icon { width: 42px; height: 42px; border-radius: 12px; font-size: 21px; } .logo-text span { font-size: 10px; letter-spacing: 1.2px; margin-top: 2px; } }
-        .nav-links { display: none; gap: 24px; }
+        /* Ocultar texto del logo en pantallas MUY pequeñas para que el header no desborde */
+        @media (max-width: 380px) { .logo-text { display: none; } }
+        .nav-links { display: none; gap: 22px; }
         @media (min-width: 992px) { .nav-links { display: flex; } }
         .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 14px; transition: var(--transition); }
         .nav-links a:hover { color: var(--primary); font-weight: 700; }
-        .header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-        @media (min-width: 768px) { .header-actions { gap: 12px; } }
-        .points-badge { background: #FFF7ED; color: #C2410C; padding: 5px 10px; border-radius: 50px; font-weight: 700; font-size: 11px; display: flex; align-items: center; gap: 4px; border: 1px solid #FFEDD5; white-space: nowrap; }
-        @media (min-width: 768px) { .points-badge { padding: 8px 16px; font-size: 14px; gap: 6px; } }
-        .btn-profile { background: #D1FAE5; color: #065F46; width: 32px; height: 32px; border-radius: 50%; font-weight: 800; font-size: 12px; display: grid; place-items: center; transition: var(--transition); flex-shrink: 0; }
-        @media (min-width: 768px) { .btn-profile { width: 40px; height: 40px; font-size: 14px; } }
-        .btn-theme { background: var(--bg-body); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; color: var(--text-main); transition: var(--transition); flex-shrink: 0; }
-        @media (min-width: 768px) { .btn-theme { width: 40px; height: 40px; font-size: 18px; } }
-        .hero { background: linear-gradient(135deg, #F0FDF4 0%, var(--bg-body) 100%); padding: 30px 0 25px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-        @media (min-width: 768px) { .hero { padding: 80px 0 60px; } }
-        [data-bs-theme="dark"] .hero { background: linear-gradient(135deg, #1E293B 0%, var(--bg-body) 100%); }
-        .hero::after { content: '🌿'; position: absolute; right: -20px; bottom: -40px; font-size: 300px; opacity: 0.05; transform: rotate(-15deg); pointer-events: none; }
-        .hero-content { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: center; }
-        @media (min-width: 992px) { .hero-content { grid-template-columns: 1fr 1fr; gap: 40px; } }
-        .hero-text h1 { font-size: 28px; line-height: 1.1; color: var(--primary); margin-bottom: 10px; }
-        @media (min-width: 768px) { .hero-text h1 { font-size: 52px; margin-bottom: 20px; } }
-        .hero-text p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
-        @media (min-width: 768px) { .hero-text p { font-size: 18px; margin-bottom: 30px; } }
-        .hero-visual { background: var(--primary); border-radius: var(--radius-lg); padding: 20px; color: white; box-shadow: var(--shadow-lg); }
-        @media (min-width: 768px) { .hero-visual { padding: 40px; } }
-        .hero-visual h3 { font-size: 20px; margin-bottom: 6px; }
-        @media (min-width: 768px) { .hero-visual h3 { font-size: 28px; margin-bottom: 10px; } }
-        .hero-visual p { opacity: 0.9; font-size: 12px; line-height: 1.5; }
-        @media (min-width: 768px) { .hero-visual p { font-size: 14px; } }
-        .quick-stats { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 16px; position: relative; z-index: 10; }
+        .header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+        @media (min-width: 768px) { .header-actions { gap: 10px; } }
+        .points-badge {
+            background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+            color: #C2410C; padding: 6px 10px; border-radius: 50px;
+            font-weight: 800; font-size: 12px; display: flex; align-items: center; gap: 4px;
+            border: 2px solid #FED7AA; white-space: nowrap;
+            animation: pointsPulse 2.5s infinite;
+            cursor: pointer; flex-shrink: 0;
+        }
+        @keyframes pointsPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(247,127,0,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(247,127,0,0); }
+        }
+        @media (min-width: 768px) { .points-badge { padding: 10px 18px; font-size: 16px; gap: 6px; } }
+        @media (prefers-reduced-motion: reduce) {
+            .points-badge, .assistant-fab { animation: none !important; }
+        }
+        .btn-profile { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); color: #065F46; width: 32px; height: 32px; border-radius: 50%; font-weight: 800; font-size: 11px; display: grid; place-items: center; transition: var(--transition); flex-shrink: 0; }
+        .btn-theme { background: var(--bg-body); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; color: var(--text-main); transition: var(--transition); flex-shrink: 0; }
+        .btn-instagram {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, #833AB4 0%, #FD1D1D 50%, #FCB045 100%);
+            color: white; display: grid; place-items: center;
+            text-decoration: none; flex-shrink: 0;
+            transition: var(--transition); box-shadow: var(--shadow-sm);
+            padding: 0;
+        }
+        .btn-instagram:hover { transform: scale(1.08); color: white; box-shadow: 0 4px 12px rgba(253,29,29,0.4); }
+        .btn-instagram svg { width: 16px; height: 16px; }
+        @media (min-width: 768px) {
+            .btn-profile, .btn-theme, .btn-instagram { width: 42px; height: 42px; }
+            .btn-profile { font-size: 14px; }
+            .btn-theme { font-size: 18px; }
+            .btn-instagram svg { width: 20px; height: 20px; }
+        }
+
+        /* --- HERO --- */
+        .hero { background: linear-gradient(135deg, #D1FAE5 0%, #FEF3C7 40%, #FCE7F3 100%); padding: 32px 0 28px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+        @media (min-width: 768px) { .hero { padding: 70px 0 50px; } }
+        [data-bs-theme="dark"] .hero { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); }
+        .hero::after { content: '🌿'; position: absolute; right: -20px; bottom: -40px; font-size: 300px; opacity: 0.06; transform: rotate(-15deg); pointer-events: none; }
+        .hero-content { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center; position: relative; z-index: 2; }
+        @media (min-width: 992px) { .hero-content { grid-template-columns: 1.2fr 1fr; gap: 40px; } }
+        .hero-text h1 { font-size: 30px; line-height: 1.05; color: var(--primary); margin-bottom: 12px; }
+        @media (min-width: 768px) { .hero-text h1 { font-size: 54px; margin-bottom: 20px; } }
+        .hero-text .lead { font-size: 15px; color: var(--text-main); line-height: 1.6; margin-bottom: 10px; font-weight: 500; }
+        .hero-text p.sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+        @media (min-width: 768px) { .hero-text .lead { font-size: 19px; } .hero-text p.sub { font-size: 15px; margin-bottom: 28px; } }
+        .hero-visual { background: linear-gradient(135deg, var(--primary) 0%, #1B4332 100%); border-radius: var(--radius-lg); padding: 24px; color: white; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+        .hero-visual::before { content: '🎮'; position: absolute; top: -10px; right: -10px; font-size: 120px; opacity: 0.08; }
+        @media (min-width: 768px) { .hero-visual { padding: 36px; } }
+        .hero-visual h3 { font-size: 20px; margin-bottom: 8px; position: relative; }
+        @media (min-width: 768px) { .hero-visual h3 { font-size: 26px; } }
+        .hero-visual p { opacity: 0.92; font-size: 13px; line-height: 1.5; position: relative; }
+        @media (min-width: 768px) { .hero-visual p { font-size: 15px; } }
+
+        /* --- FEATURES --- */
+        .features-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 24px; }
+        @media (min-width: 576px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 992px) { .features-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; } }
+        .feature-card { background: var(--bg-card); border-radius: var(--radius-md); padding: 18px; border: 1px solid var(--border); text-align: left; transition: var(--transition); }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--primary-light); }
+        .feature-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 22px; margin-bottom: 10px; }
+        .feature-card h4 { font-family: 'Manrope'; font-size: 15px; margin-bottom: 4px; }
+        .feature-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+        /* --- STATS --- */
+        .quick-stats { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; position: relative; z-index: 10; }
         @media (min-width: 768px) { .quick-stats { grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: -30px; } }
         .stat-card { background: var(--bg-card); border-radius: var(--radius-md); padding: 14px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-md); border: 1px solid var(--border); transition: var(--transition); }
         @media (min-width: 768px) { .stat-card { padding: 24px; gap: 16px; } }
-        .stat-icon { width: 38px; height: 38px; border-radius: 12px; background: rgba(var(--primary), 0.1); color: var(--primary); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+        .stat-icon { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #D1FAE5, #A7F3D0); color: var(--primary); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
         @media (min-width: 768px) { .stat-icon { width: 50px; height: 50px; border-radius: 14px; font-size: 24px; } }
         .stat-info strong { display: block; font-size: 18px; font-family: 'Manrope'; color: var(--text-main); }
         @media (min-width: 768px) { .stat-info strong { font-size: 24px; } }
         .stat-info span { font-size: 9px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         @media (min-width: 768px) { .stat-info span { font-size: 12px; } }
-        .section-header { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 16px; gap: 10px; }
+
+        /* --- SECCIONES --- */
+        .section-header { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 18px; gap: 12px; }
         @media (min-width: 768px) { .section-header { flex-direction: row; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; } }
         .section-header h2 { font-size: 22px; color: var(--text-main); }
         @media (min-width: 768px) { .section-header h2 { font-size: 32px; } }
         .section-header p { color: var(--text-muted); margin-top: 4px; font-size: 13px; }
         @media (min-width: 768px) { .section-header p { font-size: 15px; } }
-        .map-layout { display: grid; grid-template-columns: 1fr; gap: 12px; height: auto; }
+
+        /* --- MAPA --- */
+        .map-layout { display: grid; grid-template-columns: 1fr; gap: 14px; height: auto; }
         @media (min-width: 992px) { .map-layout { grid-template-columns: 1.5fr 1fr; gap: 24px; height: 600px; } }
         .map-container { background: var(--bg-card); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border); height: 320px; }
         @media (min-width: 768px) { .map-container { height: 450px; } }
@@ -93,45 +185,183 @@
         #map { width: 100%; height: 100%; z-index: 1; }
         .side-panel { display: none; }
         @media (min-width: 992px) { .side-panel { display: flex; flex-direction: column; overflow-y: auto; } }
+
+        /* --- BOTONES --- */
         .btn { padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: var(--transition); text-decoration: none; }
         @media (min-width: 768px) { .btn { padding: 12px 20px; border-radius: 12px; font-size: 14px; gap: 8px; } }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-accent { background: var(--accent); color: white; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--vibrant)); color: white; }
+        .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; }
         .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
         .btn-block { width: 100%; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .events-grid, .markets-grid, .rewards-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 16px; }
-        @media (min-width: 576px) { .events-grid, .markets-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 992px) { .events-grid, .markets-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px; } }
-        @media (min-width: 768px) { .rewards-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
-        .event-card, .market-card, .reward-card { background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; }
-        .event-card:hover, .market-card:hover, .reward-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-light); }
-        .event-img-wrap, .market-img-wrap { height: 130px; overflow: hidden; }
-        @media (min-width: 768px) { .event-img-wrap, .market-img-wrap { height: 180px; } }
-        .event-img-wrap img, .market-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
-        .event-info, .market-info { padding: 14px; flex: 1; display: flex; flex-direction: column; }
-        @media (min-width: 768px) { .event-info, .market-info { padding: 20px; } }
-        .event-tag, .market-tag { font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
-        .event-info h3, .market-info h3 { font-size: 15px; margin-bottom: 6px; }
-        @media (min-width: 768px) { .event-info h3, .market-info h3 { font-size: 18px; } }
-        .event-info p, .market-info p { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; flex: 1; }
-        @media (min-width: 768px) { .event-info p, .market-info p { font-size: 13px; } }
+        .btn:hover:not(:disabled) { transform: translateY(-1px); }
+
+        /* Filtros activos: clase CSS (no inline) para respetar el tema */
+        .filter-btn { padding: 6px 12px; font-size: 11px; }
+        .filter-btn.active {
+            background: var(--primary) !important;
+            color: white !important;
+            border-color: var(--primary) !important;
+        }
+
+        /* --- TARJETAS --- */
+        .events-grid, .markets-grid, .gaming-grid, .videos-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 16px; }
+        @media (min-width: 576px) { .events-grid, .markets-grid, .gaming-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 992px) { .events-grid, .markets-grid, .gaming-grid { grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 22px; } }
+        .rewards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+        @media (min-width: 768px) { .rewards-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+        @media (min-width: 992px) { .rewards-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+        @media (min-width: 768px) { .videos-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+        @media (min-width: 992px) { .videos-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .event-card, .market-card, .reward-card, .gaming-card, .video-card { background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; }
+        .event-card:hover, .market-card:hover, .reward-card:hover, .gaming-card:hover, .video-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-light); }
+        .event-img-wrap, .market-img-wrap, .gaming-img-wrap, .video-img-wrap { height: 130px; overflow: hidden; position: relative; }
+        @media (min-width: 768px) { .event-img-wrap, .market-img-wrap, .gaming-img-wrap, .video-img-wrap { height: 170px; } }
+        .event-img-wrap img, .market-img-wrap img, .gaming-img-wrap img, .video-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+        .event-card:hover img, .market-card:hover img, .gaming-card:hover img, .video-card:hover img { transform: scale(1.05); }
+        .event-info, .market-info, .gaming-info, .video-info { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+        @media (min-width: 768px) { .event-info, .market-info, .gaming-info, .video-info { padding: 18px; } }
+        .event-tag, .market-tag, .gaming-tag, .video-tag { font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
+        .event-info h3, .market-info h3, .gaming-info h3, .video-info h3 {
+            font-size: 15px; margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        @media (min-width: 768px) { .event-info h3, .market-info h3, .gaming-info h3, .video-info h3 { font-size: 17px; } }
+        .event-info p, .market-info p, .gaming-info p, .video-info p {
+            font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        @media (min-width: 768px) { .event-info p, .market-info p, .gaming-info p, .video-info p { font-size: 13px; } }
+
+        .event-date-badge { position: absolute; top: 8px; left: 8px; background: white; padding: 4px 8px; border-radius: 8px; text-align: center; box-shadow: var(--shadow-sm); }
+        .event-date-badge b { font-size: 14px; display: block; color: var(--text-main); line-height: 1; }
+        .event-date-badge span { font-size: 8px; color: var(--text-muted); font-weight: 700; }
+        .attendance-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.72); color: white; padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 3px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+
+        /* --- CALENDARIO --- */
+        .calendar-wrapper { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 14px; box-shadow: var(--shadow-sm); max-width: 640px; margin: 0 auto; }
+        @media (min-width: 768px) { .calendar-wrapper { padding: 22px; max-width: 720px; } }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .calendar-header h3 { font-size: 16px; text-transform: capitalize; }
+        @media (min-width: 768px) { .calendar-header h3 { font-size: 20px; } }
+        .calendar-nav { display: flex; gap: 6px; }
+        .calendar-nav button { width: 30px; height: 30px; border-radius: 50%; background: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); font-weight: 700; font-size: 16px; display: grid; place-items: center; transition: var(--transition); }
+        .calendar-nav button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .calendar-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 4px; }
+        .calendar-weekdays div { text-align: center; font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding: 4px 0; }
+        @media (min-width: 768px) { .calendar-weekdays div { font-size: 11px; } }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+        .calendar-day { min-height: 34px; border-radius: 8px; background: var(--bg-body); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text-muted); transition: var(--transition); position: relative; padding: 2px; }
+        @media (min-width: 768px) { .calendar-day { min-height: 44px; font-size: 13px; padding: 4px; } }
+        .calendar-day.other-month { opacity: 0.3; }
+        .calendar-day.today { background: linear-gradient(135deg, var(--primary), var(--vibrant)); color: white; }
+        .calendar-day.event-day { background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: #92400E; cursor: pointer; border: 1px solid var(--yellow); }
+        .calendar-day.event-day:hover { transform: scale(1.06); box-shadow: var(--shadow-md); }
+        .calendar-day .day-events { display: flex; gap: 2px; margin-top: 2px; }
+        .calendar-day .day-event-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+        @media (min-width: 768px) { .calendar-day .day-event-dot { width: 5px; height: 5px; } }
+
+        /* --- CHAT --- */
+        .chat-container { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); display: flex; flex-direction: column; height: 440px; overflow: hidden; box-shadow: var(--shadow-sm); }
+        @media (min-width: 768px) { .chat-container { height: 520px; } }
+        .chat-header { padding: 14px 18px; background: linear-gradient(135deg, var(--info), #0E7490); color: white; display: flex; align-items: center; gap: 10px; }
+        .chat-header h4 { font-size: 15px; margin: 0; }
+        .chat-header p { font-size: 11px; margin: 0; opacity: 0.85; }
+        .chat-messages { flex: 1; min-height: 0; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg-body); }
+        .chat-msg { display: flex; gap: 8px; align-items: flex-start; max-width: 85%; }
+        .chat-msg.own { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-msg-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--vibrant)); color: white; display: grid; place-items: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+        .chat-msg.own .chat-msg-avatar { background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+        .chat-msg.bot .chat-msg-avatar { background: linear-gradient(135deg, var(--info), #0E7490); }
+        .chat-bubble { background: white; padding: 8px 12px; border-radius: 14px; border-top-left-radius: 4px; box-shadow: var(--shadow-sm); font-size: 12px; line-height: 1.45; word-break: break-word; }
+        [data-bs-theme="dark"] .chat-bubble { background: #334155; }
+        .chat-msg.own .chat-bubble { background: linear-gradient(135deg, var(--primary), var(--vibrant)); color: white; border-top-left-radius: 14px; border-top-right-radius: 4px; }
+        .chat-bubble .chat-author { font-size: 10px; font-weight: 800; color: var(--primary); margin-bottom: 2px; }
+        .chat-msg.own .chat-bubble .chat-author { color: rgba(255,255,255,0.9); }
+        .chat-msg.bot .chat-bubble .chat-author { color: var(--info); }
+        .chat-bubble .chat-time { font-size: 9px; opacity: 0.6; margin-top: 3px; }
+        .chat-input-wrap { padding: 10px; border-top: 1px solid var(--border); display: flex; gap: 6px; background: var(--bg-card); }
+        .chat-input-wrap input { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); font-size: 13px; outline: none; min-width: 0; }
+        .chat-input-wrap input:focus { border-color: var(--primary); }
+        .chat-input-wrap button { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--vibrant)); color: white; font-size: 16px; display: grid; place-items: center; flex-shrink: 0; }
+
+        /* --- ASISTENTE --- */
+        .assistant-fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--info), #0E7490); color: white; font-size: 24px; display: grid; place-items: center; box-shadow: var(--shadow-lg); z-index: 2500; transition: var(--transition); animation: pointsPulse 3s infinite; }
+        .assistant-fab:hover { transform: scale(1.1); }
+        @media (min-width: 768px) { .assistant-fab { width: 64px; height: 64px; font-size: 28px; } }
+        .assistant-panel { position: fixed; bottom: 90px; right: 20px; width: calc(100vw - 40px); max-width: 380px; height: 500px; background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 2499; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); opacity: 0; transform: translateY(20px); pointer-events: none; transition: var(--transition); }
+        .assistant-panel.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .assistant-header { padding: 14px 16px; background: linear-gradient(135deg, var(--info), #0E7490); color: white; display: flex; align-items: center; gap: 10px; }
+        .assistant-header .avatar { width: 36px; height: 36px; border-radius: 50%; background: white; color: var(--info); display: grid; place-items: center; font-size: 18px; }
+        .assistant-header h4 { font-size: 14px; margin: 0; }
+        .assistant-header p { font-size: 10px; margin: 0; opacity: 0.9; }
+        .assistant-header button { margin-left: auto; background: transparent; color: white; font-size: 20px; }
+        .assistant-messages { flex: 1; min-height: 0; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg-body); }
+        .assistant-msg { padding: 10px 14px; border-radius: 14px; font-size: 12px; line-height: 1.5; max-width: 88%; }
+        .assistant-msg.bot { background: white; border-top-left-radius: 4px; box-shadow: var(--shadow-sm); align-self: flex-start; }
+        [data-bs-theme="dark"] .assistant-msg.bot { background: #334155; }
+        .assistant-msg.user { background: linear-gradient(135deg, var(--info), #0E7490); color: white; border-top-right-radius: 4px; align-self: flex-end; }
+        .assistant-input-wrap { padding: 10px; border-top: 1px solid var(--border); display: flex; gap: 6px; }
+        .assistant-input-wrap input { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); font-size: 13px; outline: none; min-width: 0; }
+        .assistant-input-wrap button { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--info), #0E7490); color: white; font-size: 16px; display: grid; place-items: center; flex-shrink: 0; }
+        .assistant-quick { display: flex; gap: 4px; padding: 0 10px 8px; flex-wrap: wrap; }
+        .assistant-quick button { font-size: 10px; padding: 4px 10px; border-radius: 20px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); }
+
+        /* --- MODAL --- */
         .modal-content { background: var(--bg-card); border: none; border-radius: var(--radius-lg); }
         .modal-body { padding: 16px; }
         @media (min-width: 768px) { .modal-body { padding: 20px; } }
         .upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; position: relative; background: var(--bg-body); }
         .upload-zone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         .upload-preview { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; display: none; margin-top: 12px; border: 1px solid var(--border); }
+
+        /* --- TOAST --- */
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text-main); color: var(--bg-card); padding: 12px 20px; border-radius: 50px; font-weight: 500; font-size: 13px; opacity: 0; pointer-events: none; transition: var(--transition); z-index: 3000; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; max-width: 90%; text-align: center; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* --- LEVEL BADGE --- */
+        .level-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--yellow); color: #78350F; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
+
+        /* --- FORM --- */
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); font-size: 13px; }
+
+        /* --- PLAY OVERLAY --- */
+        .play-overlay { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,0.28); }
+        .play-overlay .play-btn { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.95); color: var(--accent-2); display: grid; place-items: center; font-size: 16px; box-shadow: var(--shadow-md); }
+
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(45, 106, 79, 0); } 100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); } }
         .pulse-marker { animation: pulse 2s infinite; }
         .custom-marker { background: var(--bg-card); border: 3px solid var(--primary); border-radius: 50% 50% 50% 0; width: 34px; height: 34px; display: grid; place-items: center; font-size: 15px; transform: rotate(-45deg); box-shadow: var(--shadow-md); }
         .custom-marker span { transform: rotate(45deg); }
+        .custom-marker.active { border-color: var(--accent); background: #FFF7ED; }
         @media (min-width: 768px) { .custom-marker { width: 40px; height: 40px; font-size: 18px; } }
+
+        /* --- FOOTER --- */
+        footer { background: #0F172A; color: #94A3B8; padding: 40px 0 24px; margin-top: 40px; }
+        footer a { color: #94A3B8; }
+
+        /* --- EMPTY STATE --- */
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state .empty-icon { font-size: 44px; margin-bottom: 10px; opacity: 0.6; }
     </style>
 </head>
 <body>
+
+    <!-- SVG sprite para Instagram (reutilizable) -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+        <symbol id="icon-instagram" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+        </symbol>
+    </svg>
 
     <header>
         <div class="header-content">
@@ -145,29 +375,60 @@
             <nav class="nav-links">
                 <a href="#mapa">Explorar</a>
                 <a href="#eventos">Eventos</a>
+                <a href="#calendario">Calendario</a>
                 <a href="#misiones">Misiones</a>
                 <a href="#recompensas">Recompensas</a>
-                <a href="#mercados">Mercados</a>
+                <a href="#gaming">Gaming</a>
                 <a href="#comunidad">Comunidad</a>
+                <a href="https://www.instagram.com/ciudadvivamaipu" target="_blank" rel="noopener">Instagram</a>
             </nav>
             <div class="header-actions">
-                <div class="points-badge">✦ <span id="headerPoints">0</span></div>
-                <button class="btn-theme" id="btnTheme" title="Cambiar tema">🌙</button>
-                <button class="btn-profile" id="btnProfile">CV</button>
+                <div class="points-badge" id="pointsBadge" title="Toca para saber cómo ganar puntos">✦ <span id="headerPoints">0</span></div>
+                <a href="https://www.instagram.com/ciudadvivamaipu" target="_blank" rel="noopener" class="btn-instagram" aria-label="Instagram">
+                    <svg aria-hidden="true"><use href="#icon-instagram"/></svg>
+                </a>
+                <button class="btn-theme" id="btnTheme" title="Cambiar tema" aria-label="Cambiar tema">🌙</button>
+                <button class="btn-profile" id="btnProfile" title="Mi pasaporte" aria-label="Mi pasaporte">CV</button>
             </div>
         </div>
     </header>
 
     <section class="hero">
-        <div class="container hero-content">
-            <div class="hero-text">
-                <h1>La plaza es un <br><span style="color: var(--accent)">juego cooperativo</span>.</h1>
-                <p>Explora Maipú en el mapa, participa en actividades, completa misiones subiendo fotos y canjea tus puntos por recompensas locales.</p>
-                <a href="#mapa" class="btn btn-primary">Explorar el Mapa →</a>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>La plaza es un <span style="background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">juego cooperativo</span>.</h1>
+                    <p class="lead">Ciudad Viva es el pasaporte digital de los jóvenes de Maipú. Explora plazas, participa en eventos y gana puntos reales por moverte en tu barrio.</p>
+                    <p class="sub">Sube fotos verificadas con IA, completa misiones, chatea con vecinos y canjea recompensas en emprendimientos locales. 🎮🌿</p>
+                    <a href="#mapa" class="btn btn-primary">Explorar el Mapa →</a>
+                </div>
+                <div class="hero-visual">
+                    <h3>Sal. Explora. Conecta.</h3>
+                    <p>Gana experiencia y desbloquea beneficios reales por tu participación en el mundo real. Tu barrio es tu tablero.</p>
+                </div>
             </div>
-            <div class="hero-visual">
-                <h3>Sal. Explora. Conecta.</h3>
-                <p>Gana experiencia y desbloquea beneficios reales por tu participación en el mundo real.</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #DBEAFE, #BFDBFE);">🗺️</div>
+                    <h4>Explora plazas</h4>
+                    <p>Encuentra actividades cerca de ti en el mapa interactivo.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #FEF3C7, #FDE68A);">🎯</div>
+                    <h4>Gana puntos</h4>
+                    <p>Completa misiones y sube fotos validadas con IA.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #FCE7F3, #FBCFE8);">🎁</div>
+                    <h4>Canjea</h4>
+                    <p>Recompensas en cafés, ferias y emprendimientos locales.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #D1FAE5, #A7F3D0);">💬</div>
+                    <h4>Conecta</h4>
+                    <p>Chatea con vecinos y coordina actividades por plaza.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -180,7 +441,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🎟️</div>
-                <div class="stat-info"><strong id="countEvents">7</strong><span>Eventos este mes</span></div>
+                <div class="stat-info"><strong id="countEvents">12</strong><span>Eventos este mes</span></div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🌱</div>
@@ -193,7 +454,7 @@
         <div class="section-header">
             <div>
                 <h2>Encuentra tu próximo panorama</h2>
-                <p>Haz clic en los pines para ver los detalles de la plaza.</p>
+                <p>Haz clic en los pines para ver detalles, chat de la plaza y cómo llegar.</p>
             </div>
             <button class="btn btn-outline" id="btnLocate">◎ Mi ubicación</button>
         </div>
@@ -216,49 +477,83 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="placeModalTitle">Detalles</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body" id="placeModalBody"></div>
             </div>
         </div>
     </div>
 
-    <section class="section container" id="eventos" style="background: var(--bg-card); border-radius: var(--radius-lg); margin-bottom: 30px; padding: 20px;">
+    <section class="section-highlight" id="eventos">
         <div class="section-header">
             <div>
                 <h2>Agenda Local</h2>
-                <p>Lo que se mueve en Maipú.</p>
+                <p>Lo que se mueve en Maipú. Inscríbete y suma puntos.</p>
             </div>
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                <button class="btn btn-outline filter-btn active" data-filter="Todos" style="padding: 6px 12px; font-size: 11px; background: var(--primary); color: white;">Todo</button>
-                <button class="btn btn-outline filter-btn" data-filter="Deporte" style="padding: 6px 12px; font-size: 11px;">🏀 Deporte</button>
-                <button class="btn btn-outline filter-btn" data-filter="Música" style="padding: 6px 12px; font-size: 11px;">🎵 Música</button>
-                <button class="btn btn-outline filter-btn" data-filter="Arte" style="padding: 6px 12px; font-size: 11px;">🎨 Arte</button>
+                <button class="btn btn-outline filter-btn active" data-filter="Todos">Todo</button>
+                <button class="btn btn-outline filter-btn" data-filter="Deporte">🏀 Deporte</button>
+                <button class="btn btn-outline filter-btn" data-filter="Música">🎵 Música</button>
+                <button class="btn btn-outline filter-btn" data-filter="Arte">🎨 Arte</button>
+                <button class="btn btn-outline filter-btn" data-filter="Gaming">🎮 Gaming</button>
+                <button class="btn btn-outline filter-btn" data-filter="Talleres">🛍️ Talleres</button>
             </div>
         </div>
         <div class="events-grid" id="eventsGrid"></div>
+    </section>
+
+    <section class="section container" id="calendario">
+        <div class="section-header">
+            <div>
+                <h2>Calendario Digital</h2>
+                <p>Visualiza todas las actividades del mes.</p>
+            </div>
+        </div>
+        <div class="calendar-wrapper">
+            <div class="calendar-header">
+                <h3 id="calendarTitle">Diciembre 2026</h3>
+                <div class="calendar-nav">
+                    <button id="calPrev" title="Mes anterior" aria-label="Mes anterior">‹</button>
+                    <button id="calNext" title="Mes siguiente" aria-label="Mes siguiente">›</button>
+                </div>
+            </div>
+            <div class="calendar-weekdays">
+                <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
     </section>
 
     <section class="section container" id="misiones">
         <div class="section-header">
             <div>
                 <h2>Tu Pasaporte Joven</h2>
-                <p>Completa misiones y gana Puntos.</p>
+                <p>Completa misiones, sube de nivel y gana Puntos.</p>
             </div>
         </div>
         <div class="gamification-grid" style="display: grid; grid-template-columns: 1fr; gap: 16px;">
-            <div class="gamification-card" style="padding: 16px; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border);">
+            <div class="gamification-card" style="padding: 18px; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border);">
                 <h3 style="margin-bottom: 16px; font-size: 18px;">Misiones Disponibles</h3>
                 <div id="missionsList"></div>
             </div>
-            <div class="gamification-card passport-card" style="padding: 16px; background: linear-gradient(135deg, var(--primary) 0%, #1B4332 100%); color: white; border-radius: var(--radius-lg);">
-                <div style="font-size: 11px; font-weight: 700; opacity: 0.8;">SALDO DISPONIBLE</div>
-                <div style="font-size: 36px; font-weight: 800; font-family: 'Manrope';"> <span id="passportPoints">0</span> <span style="font-size: 14px; opacity: 0.7;">pts</span></div>
-                <div style="height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-top: 12px; overflow: hidden;">
-                    <div id="pointsProgress" style="height: 100%; background: var(--accent); width: 0%; border-radius: 3px;"></div>
+            <div class="gamification-card passport-card" style="padding: 20px; background: linear-gradient(135deg, var(--primary) 0%, #1B4332 100%); color: white; border-radius: var(--radius-lg); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -30px; right: -30px; font-size: 140px; opacity: 0.08;">🏆</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+                    <div>
+                        <div style="font-size: 11px; font-weight: 700; opacity: 0.8;">SALDO DISPONIBLE</div>
+                        <div style="font-size: 38px; font-weight: 800; font-family: 'Manrope';"> <span id="passportPoints">0</span> <span style="font-size: 14px; opacity: 0.7;">pts</span></div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="level-badge"><span id="levelIcon">🌱</span> Nivel <span id="levelNum">1</span></div>
+                        <div style="font-size: 10px; opacity: 0.7; margin-top: 4px;" id="levelName">Explorador</div>
+                    </div>
                 </div>
-                <p style="font-size: 11px; margin-top: 6px; opacity: 0.8;" id="nextRewardText">Próximo beneficio: 250 pts</p>
-                <button class="btn btn-block" id="btnShowPass" style="background: white; color: var(--primary); margin-top: 20px; padding: 10px;">Ver mi pase digital ↗</button>
+                <div style="height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-top: 12px; overflow: hidden;">
+                    <div id="pointsProgress" style="height: 100%; background: linear-gradient(90deg, var(--yellow), var(--accent)); width: 0%; border-radius: 3px; transition: width 0.5s;"></div>
+                </div>
+                <p style="font-size: 11px; margin-top: 6px; opacity: 0.85;" id="nextRewardText">Próximo nivel: 250 pts</p>
+                <button class="btn btn-block" id="btnShowPass" style="background: white; color: var(--primary); margin-top: 18px; padding: 10px;">Ver mi pase digital ↗</button>
+                <button class="btn btn-block" id="btnPointsInfo" style="background: rgba(255,255,255,0.15); color: white; margin-top: 8px; padding: 10px; font-size: 12px;">❓ ¿Cómo gano puntos?</button>
             </div>
         </div>
     </section>
@@ -273,6 +568,26 @@
         <div class="rewards-grid" id="rewardsGrid"></div>
     </section>
 
+    <section class="section container" id="gaming">
+        <div class="section-header">
+            <div>
+                <h2>Gaming & Esports</h2>
+                <p>Torneos, torneos móviles y zonas gamer en Maipú.</p>
+            </div>
+        </div>
+        <div class="gaming-grid" id="gamingGrid"></div>
+    </section>
+
+    <section class="section container" id="videos">
+        <div class="section-header">
+            <div>
+                <h2>Videos de la Comunidad</h2>
+                <p>Mira lo que se vive en las plazas.</p>
+            </div>
+        </div>
+        <div class="videos-grid" id="videosGrid"></div>
+    </section>
+
     <section class="section container" id="mercados">
         <div class="section-header">
             <div>
@@ -284,18 +599,60 @@
     </section>
 
     <section class="section container" id="comunidad">
-        <div class="community-banner" style="background: var(--info); border-radius: var(--radius-lg); padding: 20px; color: white; display: flex; flex-direction: column; gap: 16px;">
+        <div class="section-header">
             <div>
-                <h3 style="font-size: 18px; margin-bottom: 6px;">¿Tienes una idea para tu plaza?</h3>
-                <p style="font-size: 13px; opacity: 0.9;">Propón una tocata, un taller o una intervención.</p>
+                <h2>Comunidad Viva</h2>
+                <p>Chatea con Vivi y otros jóvenes, propone actividades y coordina.</p>
             </div>
-            <button class="btn" id="btnPropose" style="background: white; color: var(--info); width: 100%;">＋ Proponer Actividad</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: grid; place-items: center; font-size: 18px;">💬</div>
+                    <div>
+                        <h4>Chat General de Maipú</h4>
+                        <p>Con Vivi (IA) + comunidad</p>
+                    </div>
+                </div>
+                <div class="chat-messages" id="generalChatMessages"></div>
+                <div class="chat-input-wrap">
+                    <input type="text" id="generalChatInput" placeholder="Pregúntale a Vivi o saluda..." maxlength="300">
+                    <button onclick="sendGeneralMessage()" aria-label="Enviar">➤</button>
+                </div>
+            </div>
+            <div class="community-banner" style="background: linear-gradient(135deg, var(--info), #0E7490); border-radius: var(--radius-lg); padding: 20px; color: white; display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                    <h3 style="font-size: 18px; margin-bottom: 6px;">¿Tienes una idea para tu plaza?</h3>
+                    <p style="font-size: 13px; opacity: 0.9;">Propón una tocata, un taller o una intervención.</p>
+                </div>
+                <button class="btn" id="btnPropose" style="background: white; color: var(--info); width: 100%;">＋ Proponer Actividad</button>
+            </div>
         </div>
     </section>
 
-    <footer style="background: #0F172A; color: #94A3B8; padding: 30px 0 20px; margin-top: 30px;">
+    <footer>
         <div class="container">
-            <p style="font-size: 12px; text-align: center;">© 2026 Ciudad Viva Maipú · Prototipo Demostrativo</p>
+            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; text-align: center;">
+                <div style="display: flex; align-items: center; gap: 10px; color: white; font-family: 'Manrope'; font-weight: 800; font-size: 18px;">
+                    <div style="width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--vibrant)); border-radius: 10px; display: grid; place-items: center;">🌿</div>
+                    Ciudad Viva
+                </div>
+                <p style="font-size: 13px; max-width: 420px; line-height: 1.6;">El pasaporte joven de Maipú. Participa, conecta y gana recompensas reales por moverte en tu barrio.</p>
+                <div style="display: flex; gap: 12px;">
+                    <a href="https://www.instagram.com/ciudadvivamaipu" target="_blank" rel="noopener" class="btn-instagram" style="width: 44px; height: 44px;" aria-label="Instagram">
+                        <svg aria-hidden="true" style="width: 20px; height: 20px;"><use href="#icon-instagram"/></svg>
+                    </a>
+                    <a href="https://www.tiktok.com/" target="_blank" rel="noopener" style="width: 44px; height: 44px; border-radius: 50%; background: #000; color: white; display: grid; place-items: center; text-decoration: none; font-size: 20px;" aria-label="TikTok">♪</a>
+                </div>
+                <p style="font-size: 12px;">© 2026 Ciudad Viva Maipú · Prototipo Demostrativo</p>
+                <div style="display: flex; gap: 16px; font-size: 12px; flex-wrap: wrap; justify-content: center;">
+                    <a href="https://www.instagram.com/ciudadvivamaipu" target="_blank" rel="noopener">Instagram</a>
+                    <span>·</span>
+                    <span>Maipú, Chile</span>
+                    <span>·</span>
+                    <a href="#mapa">Explorar plazas</a>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -304,7 +661,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="genericModalTitle">Título</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body" id="genericModalBody"></div>
             </div>
@@ -313,58 +670,151 @@
 
     <div class="toast" id="toast">Mensaje</div>
 
+    <button class="assistant-fab" id="assistantFab" title="Habla con Vivi" aria-label="Abrir asistente virtual">🤖</button>
+    <div class="assistant-panel" id="assistantPanel">
+        <div class="assistant-header">
+            <div class="avatar">🤖</div>
+            <div>
+                <h4>Vivi · Asistente</h4>
+                <p>Pregúntame sobre Ciudad Viva</p>
+            </div>
+            <button id="assistantClose" aria-label="Cerrar">×</button>
+        </div>
+        <div class="assistant-messages" id="assistantMessages">
+            <div class="assistant-msg bot">¡Hola! 👋 Soy Vivi, tu asistente virtual. Puedo ayudarte con dudas sobre las plazas, cómo ganar puntos, eventos y recompensas. ¿Qué quieres saber?</div>
+        </div>
+        <div class="assistant-quick">
+            <button onclick="quickAsk('¿Cómo gano puntos?')">¿Cómo gano puntos?</button>
+            <button onclick="quickAsk('¿Qué eventos hay hoy?')">Eventos de hoy</button>
+            <button onclick="quickAsk('¿Cómo canjeo recompensas?')">Canjear</button>
+        </div>
+        <div class="assistant-input-wrap">
+            <input type="text" id="assistantInput" placeholder="Escribe tu pregunta..." maxlength="300">
+            <button onclick="sendAssistantMessage()" aria-label="Enviar">➤</button>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
-    <!-- CARGA DEL CONFIG (Solo MapTiler) -->
-    <script src="config.js"></script>
 
     <script>
-        // --- 1. CONFIGURACIÓN SEGURA ---
-        const MAPTILER_API_KEY = window.ENV?.MAPTILER_API_KEY || '';
-        
-        // ⚠️ IMPORTANTE: Pega aquí la URL que te dio Cloudflare al crear el Worker
-        const WORKER_URL = 'https://proxy-gemini.elbaibi323.workers.dev/'; 
+        async function loadEnv() {
+            try {
+                const response = await fetch('./.env');
+                if (!response.ok) throw new Error('No se encontró el archivo .env');
+                const text = await response.text();
+                const env = {};
+                text.split('\n').forEach(line => {
+                    const [key, value] = line.split('=');
+                    if (key && value) env[key.trim()] = value.trim();
+                });
+                return env;
+            } catch (error) {
+                console.warn('No se pudo cargar el .env, usando valores por defecto.', error);
+                return {};
+            }
+        }
 
-        // --- 2. DATOS ---
+        let MAPTILER_API_KEY = '';
+        let GEMINI_API_KEY = '';
+        const GEMINI_MODEL = 'gemini-3.1-flash-lite';
+        const GEMINI_URL = () => `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+        // --- IMÁGENES ---
+        const IMG = {
+            park: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80',
+            basketball: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80',
+            soccer: 'https://images.unsplash.com/photo-1459865264687-595d652de67e?auto=format&fit=crop&w=800&q=80',
+            mountain: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
+            art: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80',
+            market: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=800&q=80',
+            concert: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=800&q=80',
+            yoga: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80',
+            cinema: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80',
+            running: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=800&q=80',
+            volleyball: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=800&q=80',
+            skate: 'https://images.unsplash.com/photo-1520045892732-304bc3ac5d8e?auto=format&fit=crop&w=800&q=80',
+            zumba: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80',
+            street: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
+            groceries: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=800&q=80',
+            metro: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80',
+            // Gaming: imágenes distintas por juego
+            gamingFifa: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=800&q=80',
+            gamingSmash: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+            gamingMobile: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800&q=80'
+        };
+
         const places = [
-            { id: 'parque-tres-poniente', name: 'Parque Tres Poniente', address: 'Av. Tres Poniente, Maipú', lat: -33.5220, lng: -70.7710, category: 'Deporte', icon: '🏀', image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80', desc: 'Espacio verde con canchas y zona de footvolley.', features: ['Multicancha', 'Iluminación LED'] },
-            { id: 'plaza-maipu', name: 'Plaza de Maipú', address: 'Entorno Plaza de Maipú', lat: -33.5105, lng: -70.7570, category: 'Comunidad', icon: '🌿', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80', desc: 'Corazón cívico de Maipú, punto de encuentro para ferias.', features: ['Conectividad', 'Feria local'] },
-            { id: 'cerro-primo-rivera', name: 'Cerro Primo de Rivera', address: 'Cerro Los Pajaritos', lat: -33.5180, lng: -70.7650, category: 'Aventura', icon: '🥾', image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80', desc: 'Ideal para trail running y paseos panorámicos.', features: ['Senderos', 'Máquinas de ejercicio'] },
-            { id: 'estadio-bueras', name: 'Estadio Santiago Bueras', address: 'Maipú', lat: -33.5090, lng: -70.7520, category: 'Deporte', icon: '⚽', image: 'https://images.unsplash.com/photo-1459865264687-595d652de67e?auto=format&fit=crop&w=600&q=80', desc: 'Casa del fútbol maipucino con iluminación LED.', features: ['Cancha de fútbol', 'Iluminación LED'] },
-            { id: 'plaza-juventud', name: 'Plaza de la Juventud', address: 'San José, Maipú', lat: -33.5150, lng: -70.7600, category: 'Cultura', icon: '🎨', image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=600&q=80', desc: 'Espacio renovado para la expresión artística.', features: ['Juegos infantiles', 'Áreas verdes'] }
+            { id: 'parque-tres-poniente', name: 'Parque Tres Poniente', address: 'Av. Tres Poniente, Maipú', lat: -33.5220, lng: -70.7710, category: 'Deporte', icon: '🏀', image: IMG.basketball, desc: 'Espacio verde con canchas y zona de footvolley.', features: ['Multicancha', 'Iluminación LED'] },
+            { id: 'plaza-maipu', name: 'Plaza de Maipú', address: 'Entorno Plaza de Maipú', lat: -33.5105, lng: -70.7570, category: 'Comunidad', icon: '🌿', image: IMG.park, desc: 'Corazón cívico de Maipú, punto de encuentro para ferias.', features: ['Conectividad', 'Feria local'] },
+            { id: 'cerro-primo-rivera', name: 'Cerro Primo de Rivera', address: 'Cerro Los Pajaritos', lat: -33.5180, lng: -70.7650, category: 'Aventura', icon: '🥾', image: IMG.mountain, desc: 'Ideal para trail running y paseos panorámicos.', features: ['Senderos', 'Máquinas de ejercicio'] },
+            { id: 'estadio-bueras', name: 'Estadio Santiago Bueras', address: 'Maipú', lat: -33.5090, lng: -70.7520, category: 'Deporte', icon: '⚽', image: IMG.soccer, desc: 'Casa del fútbol maipucino con iluminación LED.', features: ['Cancha de fútbol', 'Iluminación LED'] },
+            { id: 'plaza-juventud', name: 'Plaza de la Juventud', address: 'San José, Maipú', lat: -33.5150, lng: -70.7600, category: 'Cultura', icon: '🎨', image: IMG.art, desc: 'Espacio renovado para la expresión artística.', features: ['Juegos infantiles', 'Áreas verdes'] }
         ];
 
         const events = [
-            { id: 'hoy-zumba', title: 'Zumba y Baile Entretenido', category: 'Deporte', icon: '💃', placeId: 'plaza-maipu', placeName: 'Plaza de Maipú', dateDay: 'Hoy', dateMonth: '', time: '18:00', desc: 'Jornada de zumba abierta a la comunidad.', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=600&q=80', spots: 'Acceso liberado' },
-            { id: 'footvolley', title: 'Torneo de Footvolley', category: 'Deporte', icon: '🏐', placeId: 'parque-tres-poniente', placeName: 'Parque Tres Poniente', dateDay: '12', dateMonth: 'DIC', time: '16:00', desc: 'Torneo en la cancha de arena.', image: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=600&q=80', spots: 'Inscripción abierta' },
-            { id: 'trail-running', title: 'Trail Running Nocturno', category: 'Deporte', icon: '🏃', placeId: 'cerro-primo-rivera', placeName: 'Cerro Primo de Rivera', dateDay: '18', dateMonth: 'DIC', time: '20:00', desc: 'Jornada gratuita por los senderos.', image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=600&q=80', spots: 'Cupos limitados' },
-            { id: 'mural-comunitario', title: 'Mural Comunitario', category: 'Arte', icon: '🎨', placeId: 'plaza-juventud', placeName: 'Plaza de la Juventud', dateDay: '28', dateMonth: 'DIC', time: '10:00', desc: 'Taller de pintura y muralismo para jóvenes.', image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=600&q=80', spots: 'Cupos limitados' },
-            { id: 'feria-emprendedores', title: 'Feria de Emprendedores', category: 'Talleres', icon: '🛍️', placeId: 'plaza-maipu', placeName: 'Metro Plaza de Maipú', dateDay: '16', dateMonth: 'DIC', time: '10:00', desc: 'Vitrina para emprendedores locales.', image: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=600&q=80', spots: 'Entrada liberada' },
-            { id: 'mercado-maipucino', title: 'Mercado Maipucino', category: 'Talleres', icon: '🥕', placeId: 'plaza-maipu', placeName: 'Estación Gutiérrez', dateDay: '20', dateMonth: 'DIC', time: '09:00', desc: 'Productores locales ofrecen sus productos.', image: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=600&q=80', spots: 'Acceso liberado' },
-            { id: 'tocata-navidad', title: 'Tocata Navideña', category: 'Música', icon: '🎵', placeId: 'plaza-maipu', placeName: 'Plaza de Maipú', dateDay: '21', dateMonth: 'DIC', time: '19:00', desc: 'Bandas locales celebran la Navidad.', image: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&q=80', spots: 'Cupos abiertos' }
+            { id: 'hoy-zumba', title: 'Zumba y Baile Entretenido', category: 'Deporte', icon: '💃', placeId: 'plaza-maipu', placeName: 'Plaza de Maipú', dateDay: '05', dateMonth: 'DIC', date: '2026-12-05', time: '18:00', desc: 'Jornada de zumba abierta a la comunidad.', image: IMG.zumba, spots: 'Acceso liberado', attendees: 45 },
+            { id: 'footvolley', title: 'Torneo de Footvolley', category: 'Deporte', icon: '🏐', placeId: 'parque-tres-poniente', placeName: 'Parque Tres Poniente', dateDay: '12', dateMonth: 'DIC', date: '2026-12-12', time: '16:00', desc: 'Torneo en la cancha de arena.', image: IMG.volleyball, spots: 'Inscripción abierta', attendees: 78 },
+            { id: 'trail-running', title: 'Trail Running Nocturno', category: 'Deporte', icon: '🏃', placeId: 'cerro-primo-rivera', placeName: 'Cerro Primo de Rivera', dateDay: '18', dateMonth: 'DIC', date: '2026-12-18', time: '20:00', desc: 'Jornada gratuita por los senderos.', image: IMG.running, spots: 'Cupos limitados', attendees: 32 },
+            { id: 'mural-comunitario', title: 'Mural Comunitario', category: 'Arte', icon: '🎨', placeId: 'plaza-juventud', placeName: 'Plaza de la Juventud', dateDay: '28', dateMonth: 'DIC', date: '2026-12-28', time: '10:00', desc: 'Taller de pintura y muralismo para jóvenes.', image: IMG.art, spots: 'Cupos limitados', attendees: 24 },
+            { id: 'feria-emprendedores', title: 'Feria de Emprendedores', category: 'Talleres', icon: '🛍️', placeId: 'plaza-maipu', placeName: 'Metro Plaza de Maipú', dateDay: '16', dateMonth: 'DIC', date: '2026-12-16', time: '10:00', desc: 'Vitrina para emprendedores locales.', image: IMG.market, spots: 'Entrada liberada', attendees: 120 },
+            { id: 'mercado-maipucino', title: 'Mercado Maipucino', category: 'Talleres', icon: '🥕', placeId: 'plaza-maipu', placeName: 'Estación Gutiérrez', dateDay: '20', dateMonth: 'DIC', date: '2026-12-20', time: '09:00', desc: 'Productores locales ofrecen sus productos.', image: IMG.groceries, spots: 'Acceso liberado', attendees: 95 },
+            { id: 'tocata-navidad', title: 'Tocata Navideña', category: 'Música', icon: '🎵', placeId: 'plaza-maipu', placeName: 'Plaza de Maipú', dateDay: '21', dateMonth: 'DIC', date: '2026-12-21', time: '19:00', desc: 'Bandas locales celebran la Navidad.', image: IMG.concert, spots: 'Cupos abiertos', attendees: 210 },
+            { id: 'yoga-parque', title: 'Yoga al Amanecer', category: 'Deporte', icon: '🧘', placeId: 'parque-tres-poniente', placeName: 'Parque Tres Poniente', dateDay: '08', dateMonth: 'DIC', date: '2026-12-08', time: '08:00', desc: 'Clase de yoga abierta para comenzar el día.', image: IMG.yoga, spots: 'Trae tu mat', attendees: 38 },
+            { id: 'cine-plaza', title: 'Cine al Aire Libre', category: 'Arte', icon: '🎬', placeId: 'plaza-juventud', placeName: 'Plaza de la Juventud', dateDay: '14', dateMonth: 'DIC', date: '2026-12-14', time: '20:30', desc: 'Proyección de película juvenil bajo las estrellas.', image: IMG.cinema, spots: 'Entrada liberada', attendees: 150 },
+            { id: 'basquet-3x3', title: 'Torneo Básquetbol 3x3', category: 'Deporte', icon: '🏀', placeId: 'estadio-bueras', placeName: 'Estadio Santiago Bueras', dateDay: '10', dateMonth: 'DIC', date: '2026-12-10', time: '17:00', desc: 'Torneo rápido de básquetbol para jóvenes.', image: IMG.basketball, spots: 'Inscripción abierta', attendees: 64 },
+            { id: 'taller-skate', title: 'Taller de Skate', category: 'Deporte', icon: '🛹', placeId: 'parque-tres-poniente', placeName: 'Parque Tres Poniente', dateDay: '22', dateMonth: 'DIC', date: '2026-12-22', time: '16:00', desc: 'Clase básica de skate para principiantes.', image: IMG.skate, spots: 'Trae tu skate', attendees: 28 },
+            { id: 'torneo-fifa', title: 'Torneo FIFA & Smash', category: 'Gaming', icon: '🎮', placeId: 'plaza-juventud', placeName: 'Plaza de la Juventud', dateDay: '27', dateMonth: 'DIC', date: '2026-12-27', time: '15:00', desc: 'Torneo gamer con premios para los mejores.', image: IMG.gamingFifa, spots: 'Inscripción $2.000', attendees: 56 }
         ];
 
         const missions = [
             { id: 'move', icon: '🏀', title: 'Activa tu plaza', desc: 'Participa en una actividad deportiva.', points: 100 },
             { id: 'culture', icon: '🎵', title: 'Vive la cultura', desc: 'Asiste a una tocata o muestra artística.', points: 120 },
-            { id: 'care', icon: '🌱', title: 'Cuida tu espacio', desc: 'Súmate a una acción de limpieza.', points: 150 }
+            { id: 'care', icon: '🌱', title: 'Cuida tu espacio', desc: 'Súmate a una acción de limpieza.', points: 150 },
+            { id: 'game', icon: '🎮', title: 'Modo Gamer', desc: 'Participa en un torneo gaming.', points: 130 }
         ];
 
         const rewards = [
             { id: 'coffee', icon: '☕', name: 'Café Local', partner: 'Café del Barrio', cost: 250 },
             { id: 'snack', icon: '🥪', name: 'Colación', partner: 'Comida al Paso', cost: 350 },
-            { id: 'craft', icon: '🎨', name: 'Producto Creativo', partner: 'Creadores de Maipú', cost: 500 }
+            { id: 'craft', icon: '🎨', name: 'Producto Creativo', partner: 'Creadores de Maipú', cost: 500 },
+            { id: 'icecream', icon: '🍦', name: 'Helado Artesanal', partner: 'Heladería Maipú', cost: 280 },
+            { id: 'book', icon: '📚', name: 'Libro Local', partner: 'Librería del Barrio', cost: 400 },
+            { id: 'dance', icon: '💃', name: 'Clase de Baile', partner: 'Estudio Ritmo', cost: 450 },
+            { id: 'cinema', icon: '🎬', name: 'Entrada Cine', partner: 'Cine Maipú', cost: 600 },
+            { id: 'discount', icon: '🏷️', name: 'Descuento 15%', partner: 'Tienda Local', cost: 200 }
         ];
 
         const markets = [
-            { id: 'feria-independientes', name: 'Feria de Emprendedores', location: 'Metro Plaza de Maipú', icon: '🛍️', image: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=600&q=80' },
-            { id: 'mercado-arauco', name: 'Mercado Mall Arauco', location: 'Mall Arauco Maipú', icon: '🏬', image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80' },
-            { id: 'mercado-municipal', name: 'Feria Mercado Municipal', location: 'Primera Transversal', icon: '🏛️', image: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=600&q=80' },
-            { id: 'mercado-un-metro', name: 'Mercado a Un Metro', location: 'Estaciones del Metro', icon: '🚇', image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80' },
-            { id: 'mercado-maipucino', name: 'Mercado Maipucino', location: 'Estación Gutiérrez', icon: '🥕', image: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=600&q=80' }
+            { id: 'feria-independientes', name: 'Feria de Emprendedores', location: 'Metro Plaza de Maipú', icon: '🛍️', image: IMG.market },
+            { id: 'mercado-arauco', name: 'Mercado Mall Arauco', location: 'Mall Arauco Maipú', icon: '🏬', image: IMG.street },
+            { id: 'mercado-municipal', name: 'Feria Mercado Municipal', location: 'Primera Transversal', icon: '🏛️', image: IMG.groceries },
+            { id: 'mercado-un-metro', name: 'Mercado a Un Metro', location: 'Estaciones del Metro', icon: '🚇', image: IMG.metro },
+            { id: 'mercado-maipucino', name: 'Mercado Maipucino', location: 'Estación Gutiérrez', icon: '🥕', image: IMG.market }
         ];
+
+        // Gaming con imágenes temáticas por juego
+        const gamingItems = [
+            { id: 'g1', title: 'Torneo FIFA 2026', place: 'Plaza de la Juventud', icon: '⚽', image: IMG.gamingFifa, desc: 'Torneo competitivo de fútbol virtual con premios en puntos y productos locales.', date: '27 DIC · 15:00' },
+            { id: 'g2', title: 'Smash Bros Local', place: 'Parque Tres Poniente', icon: '🥊', image: IMG.gamingSmash, desc: 'Encuentro casual de Super Smash para todos los niveles y edades.', date: '15 DIC · 17:00' },
+            { id: 'g3', title: 'Zona Gamer Móvil', place: 'Plaza de Maipú', icon: '📱', image: IMG.gamingMobile, desc: 'Consolas, pantallas y zonas mobile para jugar con amigos en la plaza.', date: 'Todo el mes' }
+        ];
+
+        const videos = [
+            { id: 'v1', title: 'Así se vivió el Footvolley', place: 'Parque Tres Poniente', thumb: IMG.volleyball, query: 'footvolley torneo playa' },
+            { id: 'v2', title: 'Tocata Navideña Highlights', place: 'Plaza de Maipú', thumb: IMG.concert, query: 'tocata banda en vivo plaza' },
+            { id: 'v3', title: 'Mural Comunitario en proceso', place: 'Plaza de la Juventud', thumb: IMG.art, query: 'mural comunitario jovenes' },
+            { id: 'v4', title: 'Trail Running Nocturno', place: 'Cerro Primo de Rivera', thumb: IMG.running, query: 'trail running nocturno' },
+            { id: 'v5', title: 'Clase de Yoga Amanecer', place: 'Parque Tres Poniente', thumb: IMG.yoga, query: 'yoga al aire libre parque' },
+            { id: 'v6', title: 'Torneo Básquetbol 3x3', place: 'Estadio Bueras', thumb: IMG.basketball, query: 'basquetbol 3x3 torneo' }
+        ];
+
+        const seedChats = {
+            general: [
+                { user: 'Vivi', text: '¡Hola! 👋 Soy Vivi, tu asistente. Pregúntame por eventos, cómo ganar puntos o qué hacer este finde.', time: Date.now() - 3600000, avatar: '🤖', isBot: true }
+            ]
+        };
 
         const state = {
             points: Number(localStorage.getItem('cv_points') || 0),
@@ -375,29 +825,79 @@
             filter: 'Todos',
             map: null,
             markers: [],
-            theme: localStorage.getItem('cv_theme') || 'light'
+            theme: localStorage.getItem('cv_theme') || 'light',
+            calendarYear: 2026,
+            calendarMonth: 11
         };
 
         const $ = id => document.getElementById(id);
-        const save = () => { localStorage.setItem('cv_points', state.points); localStorage.setItem('cv_registered', JSON.stringify(state.registered)); localStorage.setItem('cv_completed', JSON.stringify(state.completed)); localStorage.setItem('cv_redeemed', JSON.stringify(state.redeemed)); localStorage.setItem('cv_proposals', JSON.stringify(state.proposals)); updateUI(); };
+        const save = () => {
+            localStorage.setItem('cv_points', state.points);
+            localStorage.setItem('cv_registered', JSON.stringify(state.registered));
+            localStorage.setItem('cv_completed', JSON.stringify(state.completed));
+            localStorage.setItem('cv_redeemed', JSON.stringify(state.redeemed));
+            localStorage.setItem('cv_proposals', JSON.stringify(state.proposals));
+            updateUI();
+        };
         const showToast = (msg) => { const el = $('toast'); el.innerHTML = msg; el.classList.add('show'); clearTimeout(el.timer); el.timer = setTimeout(() => el.classList.remove('show'), 3000); };
-        const openModal = (title, html) => { $('genericModalTitle').textContent = title; $('genericModalBody').innerHTML = html; const modal = new bootstrap.Modal($('genericModal')); modal.show(); if (window.QRCode && html.includes('id="qrContainer"')) { setTimeout(() => new QRCode($('qrContainer'), { text: `CIUDAD VIVA|${Date.now()}`, width: 150, height: 150 }), 100); } };
+
+        // openModal con getOrCreateInstance para evitar múltiples instancias
+        const openModal = (title, html) => {
+            $('genericModalTitle').textContent = title;
+            $('genericModalBody').innerHTML = html;
+            const modal = bootstrap.Modal.getOrCreateInstance($('genericModal'));
+            modal.show();
+            if (window.QRCode && html.includes('id="qrContainer"')) {
+                setTimeout(() => new QRCode($('qrContainer'), { text: `CIUDAD VIVA|${Date.now()}`, width: 150, height: 150 }), 100);
+            }
+        };
+        const hideGenericModal = () => bootstrap.Modal.getInstance($('genericModal'))?.hide();
+
+        function getLevel(points) {
+            const levels = [
+                { min: 0, name: 'Explorador', icon: '🌱' },
+                { min: 250, name: 'Aventurero', icon: '🌿' },
+                { min: 500, name: 'Conector', icon: '🔥' },
+                { min: 1000, name: 'Líder', icon: '⭐' },
+                { min: 2000, name: 'Leyenda', icon: '👑' }
+            ];
+            let current = levels[0];
+            for (const l of levels) if (points >= l.min) current = l;
+            return current;
+        }
+        function getNextLevel(points) {
+            const thresholds = [250, 500, 1000, 2000, Infinity];
+            for (const t of thresholds) if (points < t) return t;
+            return Infinity;
+        }
+        function getLevelNum(points) {
+            return Math.min(5, [0,250,500,1000,2000].filter(t => points >= t).length);
+        }
 
         function updateUI() {
             $('headerPoints').textContent = state.points.toLocaleString('es-CL');
             $('passportPoints').textContent = state.points.toLocaleString('es-CL');
             $('countProposals').textContent = state.proposals.length;
-            const progress = Math.min(100, (state.points % 250) / 250 * 100);
-            $('pointsProgress').style.width = `${progress}%`;
-            $('nextRewardText').textContent = state.points >= 250 ? '¡Ya puedes canjear!' : `Faltan ${250 - state.points} pts`;
+            const level = getLevel(state.points);
+            $('levelIcon').textContent = level.icon;
+            $('levelNum').textContent = getLevelNum(state.points);
+            $('levelName').textContent = level.name;
+            const next = getNextLevel(state.points);
+            const currentMin = [0,250,500,1000,2000].filter(t => state.points >= t).pop() || 0;
+            const progress = next === Infinity ? 100 : ((state.points - currentMin) / (next - currentMin)) * 100;
+            $('pointsProgress').style.width = `${Math.max(0, Math.min(100, progress))}%`;
+            $('nextRewardText').textContent = next === Infinity ? '¡Nivel máximo!' : `Próximo nivel: ${next} pts`;
             renderMissions(); renderRewards(); renderEvents(); renderMarkets();
+            renderGaming(); renderVideos(); renderCalendar();
         }
 
         function initMap() {
             if (!MAPTILER_API_KEY) {
-                $('map').innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;"><p>No se encontró la clave de MapTiler en config.js</p></div>`;
+                $('map').innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;"><p>No se encontró la clave de MapTiler en el archivo .env</p></div>`;
                 return;
             }
+            // Reset markers al re-inicializar (evita duplicados al cambiar tema)
+            state.markers = [];
             state.map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([-33.511, -70.758], 14);
             const tileUrl = state.theme === 'dark' ? `https://api.maptiler.com/maps/streets-v2-dark/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}` : `https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}`;
             L.tileLayer(tileUrl, { tileSize: 512, zoomOffset: -1, minZoom: 1, crossOrigin: true }).addTo(state.map);
@@ -417,11 +917,24 @@
             document.querySelectorAll('.custom-marker').forEach(m => m.classList.remove('active'));
             const activeMarker = $(`marker-${place.id}`);
             if (activeMarker) activeMarker.classList.add('active');
-            const html = `<img src="${place.image}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px;"><span style="background: #E0F2FE; color: #0369A1; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;">${place.icon} ${place.category}</span><h3 style="font-size: 18px; margin: 8px 0 4px;">${place.name}</h3><p style="font-size: 13px; color: var(--text-muted);">${place.desc}</p><div style="font-size: 12px; margin: 8px 0;"><b>📍 Ubicación:</b> ${place.address}</div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;"><a href="https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}" target="_blank" class="btn btn-primary" style="font-size: 12px;">↗ Cómo llegar</a><button class="btn btn-outline" onclick="scrollToSection('eventos')" style="font-size: 12px;">Ver Eventos</button></div>`;
+            const html = `
+                <img src="${place.image}" alt="${place.name}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px;">
+                <span style="background: #E0F2FE; color: #0369A1; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;">${place.icon} ${place.category}</span>
+                <h3 style="font-size: 18px; margin: 8px 0 4px;">${place.name}</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">${place.desc}</p>
+                <div style="font-size: 12px; margin: 8px 0;"><b>📍 Ubicación:</b> ${place.address}</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}" target="_blank" rel="noopener" class="btn btn-primary" style="font-size: 12px;">↗ Cómo llegar</a>
+                    <button class="btn btn-outline" onclick="scrollToSection('eventos')" style="font-size: 12px;">Ver Eventos</button>
+                </div>
+                <button class="btn btn-block" onclick="openPlazaChat('${place.id}', '${place.name.replace(/'/g, "\\'")}')" style="background: linear-gradient(135deg, var(--info), #0E7490); color: white; margin-top: 8px; font-size: 12px;">💬 Chat de la plaza (con Vivi)</button>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;">
+                    ${place.features.map(f => `<span style="background: var(--bg-body); padding: 4px 10px; border-radius: 20px; font-size: 11px; border: 1px solid var(--border);">✓ ${f}</span>`).join('')}
+                </div>`;
             if (isMobile && !forcePanel) {
                 $('placeModalTitle').textContent = place.name;
                 $('placeModalBody').innerHTML = html;
-                new bootstrap.Modal($('placeModal')).show();
+                bootstrap.Modal.getOrCreateInstance($('placeModal')).show();
             } else {
                 $('sidePanel').innerHTML = `<div style="padding: 16px;">${html}</div>`;
             }
@@ -429,9 +942,28 @@
         }
 
         function renderEvents() {
-            const grid = $('eventsGrid');
             const filtered = events.filter(e => state.filter === 'Todos' || e.category === state.filter);
-            grid.innerHTML = filtered.map((e, i) => `<div class="event-card" onclick="openEventModal('${e.id}')"><div class="event-img-wrap"><img src="${e.image}" loading="lazy"><div class="event-date-badge" style="position: absolute; top: 8px; left: 8px; background: white; padding: 4px 8px; border-radius: 8px;"><b style="font-size: 14px;">${e.dateDay}</b><span style="font-size: 8px;">${e.dateMonth}</span></div></div><div class="event-info"><div class="event-tag">${e.icon} ${e.category}</div><h3>${e.title}</h3><p>${e.desc}</p><div class="event-footer" style="display: flex; justify-content: space-between; padding-top: 10px;"><div style="font-size: 10px;">📍 ${e.placeName}</div><span style="font-size: 11px; font-weight: 700; color: var(--primary);">Ver →</span></div></div></div>`).join('');
+            if (filtered.length === 0) {
+                $('eventsGrid').innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>No hay eventos con este filtro. Prueba con otro.</p></div>`;
+                return;
+            }
+            $('eventsGrid').innerHTML = filtered.map(e => `
+                <div class="event-card" onclick="openEventModal('${e.id}')">
+                    <div class="event-img-wrap">
+                        <img src="${e.image}" loading="lazy" alt="${e.title}">
+                        <div class="event-date-badge"><b>${e.dateDay}</b><span>${e.dateMonth}</span></div>
+                        <div class="attendance-badge">👥 ${e.attendees}</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-tag">${e.icon} ${e.category}</div>
+                        <h3>${e.title}</h3>
+                        <p>${e.desc}</p>
+                        <div style="display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border);">
+                            <div style="font-size: 10px;">📍 ${e.placeName}</div>
+                            <span style="font-size: 11px; font-weight: 700; color: var(--primary);">Ver →</span>
+                        </div>
+                    </div>
+                </div>`).join('');
         }
 
         function openEventModal(id) {
@@ -440,7 +972,31 @@
             const place = places.find(p => p.id === e.placeId);
             const isRegistered = state.registered.includes(id);
             const btnHtml = isRegistered ? `<button class="btn btn-block" style="background: #D1FAE5; color: #065F46;">✓ Inscrito</button>` : `<button class="btn btn-accent btn-block" onclick="registerEvent('${id}')">Inscribirme</button>`;
-            openModal('Detalle', `<img src="${e.image}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px;"><h2 style="font-size: 20px;">${e.title}</h2><span style="color: var(--accent); font-weight: 700; font-size: 13px;">${e.icon} ${e.category}</span><p style="color: var(--text-muted); font-size: 13px; margin: 12px 0;">${e.desc}</p><div style="background: var(--bg-body); padding: 12px; border-radius: 10px; margin-bottom: 16px; font-size: 13px;"><div>📍 <b>${e.placeName}</b></div><div>◷ <b>${e.time}</b> · 🎟️ ${e.spots}</div></div><div style="display: grid; gap: 8px;">${btnHtml}${place ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}" target="_blank" class="btn btn-outline btn-block" style="font-size: 12px;">🗺️ Ir con Google Maps</a>` : ''}</div><div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;"><p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">📸 Sube tu foto de asistencia</p><div class="upload-zone" id="eventUploadZone-${id}"><input type="file" id="eventPhotoInput-${id}" accept="image/*" capture="environment"><div style="font-size: 28px;">📸</div><div style="font-size: 12px; color: var(--text-muted);">Tomar o subir foto</div></div><img id="eventPhotoPreview-${id}" class="upload-preview" style="display: none;"><div id="eventGeminiStatus-${id}" style="margin-top: 8px; font-size: 12px; font-weight: 600; text-align: center;"></div><button id="btnValidateEvent-${id}" class="btn btn-outline btn-block" style="margin-top: 8px; font-size: 12px;" disabled onclick="validateEventPhoto('${id}')">Validar foto con IA</button></div>`);
+            openModal('Detalle', `
+                <img src="${e.image}" alt="${e.title}" style="width: 100%; height: 170px; object-fit: cover; border-radius: 12px; margin-bottom: 12px;">
+                <h2 style="font-size: 20px;">${e.title}</h2>
+                <span style="color: var(--accent); font-weight: 700; font-size: 13px;">${e.icon} ${e.category}</span>
+                <p style="color: var(--text-muted); font-size: 13px; margin: 12px 0;">${e.desc}</p>
+                <div style="background: var(--bg-body); padding: 12px; border-radius: 10px; margin-bottom: 16px; font-size: 13px;">
+                    <div>📍 <b>${e.placeName}</b></div>
+                    <div>◷ <b>${e.time}</b> · 🎟️ ${e.spots}</div>
+                    <div>👥 <b>${e.attendees + (isRegistered ? 1 : 0)}</b> personas van</div>
+                </div>
+                <div style="display: grid; gap: 8px;">
+                    ${btnHtml}
+                    ${place ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}" target="_blank" rel="noopener" class="btn btn-outline btn-block" style="font-size: 12px;">🗺️ Ir con Google Maps</a>` : ''}
+                </div>
+                <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                    <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">📸 Sube tu foto de asistencia (+50 pts)</p>
+                    <div class="upload-zone" id="eventUploadZone-${id}">
+                        <input type="file" id="eventPhotoInput-${id}" accept="image/*" capture="environment" aria-label="Subir foto">
+                        <div style="font-size: 28px;">📸</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Tomar o subir foto</div>
+                    </div>
+                    <img id="eventPhotoPreview-${id}" class="upload-preview" style="display: none;" alt="Vista previa">
+                    <div id="eventGeminiStatus-${id}" style="margin-top: 8px; font-size: 12px; font-weight: 600; text-align: center;"></div>
+                    <button id="btnValidateEvent-${id}" class="btn btn-outline btn-block" style="margin-top: 8px; font-size: 12px;" disabled onclick="validateEventPhoto('${id}')">Validar foto con IA</button>
+                </div>`);
             const input = $(`eventPhotoInput-${id}`);
             const preview = $(`eventPhotoPreview-${id}`);
             const btn = $(`btnValidateEvent-${id}`);
@@ -457,10 +1013,19 @@
             }
         }
 
-        window.registerEvent = (id) => { if (state.registered.includes(id)) return; state.registered.push(id); save(); bootstrap.Modal.getInstance($('genericModal'))?.hide(); showToast('🎉 ¡Inscrito!'); };
+        window.registerEvent = (id) => {
+            if (state.registered.includes(id)) return;
+            state.registered.push(id);
+            const e = events.find(x => x.id === id);
+            if (e) e.attendees += 1;
+            state.points += 10;
+            save();
+            hideGenericModal();
+            showToast('🎉 ¡Inscrito! +10 pts');
+        };
 
-        // --- VALIDACIÓN DE EVENTO USANDO EL WORKER ---
         async function validateEventPhoto(eventId) {
+            if (!GEMINI_API_KEY) { showToast('⚠️ No se encontró la API Key de Gemini en el .env'); return; }
             const fileInput = $(`eventPhotoInput-${eventId}`);
             if (!fileInput.files.length) return;
             const file = fileInput.files[0];
@@ -471,8 +1036,7 @@
             const event = events.find(e => e.id === eventId);
             try {
                 const base64Data = await fileToBase64(file);
-                // Llamamos al WORKER_URL en lugar de Google directamente
-                const response = await fetch(WORKER_URL, {
+                const response = await fetch(GEMINI_URL(), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza esta imagen. ¿Es una foto tomada en ${event.placeName} durante el evento "${event.title}"? Responde solo "SI" o "NO" y una breve explicación.` }, { inline_data: { mime_type: file.type, data: base64Data.split(',')[1] } }] }] })
@@ -481,37 +1045,72 @@
                 if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
                     const reply = data.candidates[0].content.parts[0].text.trim().toUpperCase();
                     if (reply.startsWith('SI') || reply.includes('SÍ')) {
-                        statusEl.textContent = '✅ ¡Foto verificada! +50 pts.'; statusEl.style.color = 'var(--primary)';
-                        state.points += 50; save(); btn.disabled = true; btn.textContent = 'Validada';
+                        statusEl.textContent = '✅ ¡Foto verificada! +50 pts.';
+                        statusEl.style.color = 'var(--primary)';
+                        state.points += 50; save();
+                        btn.disabled = true; btn.textContent = 'Validada';
                     } else {
-                        statusEl.textContent = `❌ La IA no pudo verificar la foto. (${reply.substring(0, 60)})`; statusEl.style.color = '#DC2626';
+                        statusEl.textContent = `❌ La IA no pudo verificar la foto. (${reply.substring(0, 60)})`;
+                        statusEl.style.color = '#DC2626';
                         btn.disabled = false; btn.textContent = 'Intentar de nuevo';
                     }
                 } else {
-                    const errMsg = data.error?.message || 'Respuesta inesperada del Proxy.';
-                    statusEl.textContent = `⚠️ Error del Proxy: ${errMsg.substring(0, 100)}`; statusEl.style.color = '#DC2626';
+                    const errMsg = data.error?.message || 'Respuesta inesperada de Gemini.';
+                    statusEl.textContent = `⚠️ Error de API: ${errMsg.substring(0, 100)}`;
+                    statusEl.style.color = '#DC2626';
                     btn.disabled = false; btn.textContent = 'Reintentar';
                 }
             } catch (error) {
-                statusEl.textContent = `⚠️ Error de red. ${error.message.substring(0, 80)}`; statusEl.style.color = '#DC2626';
+                statusEl.textContent = `⚠️ Error de red o clave inválida. ${error.message.substring(0, 80)}`;
+                statusEl.style.color = '#DC2626';
                 btn.disabled = false; btn.textContent = 'Reintentar';
             }
         }
 
-        function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
 
         function renderMissions() {
             $('missionsList').innerHTML = missions.map(m => {
                 const isDone = state.completed.includes(m.id);
-                return `<div style="display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border);"><div style="width: 36px; height: 36px; border-radius: 50%; background: #FEF3C7; display: grid; place-items: center; font-size: 18px;">${m.icon}</div><div style="flex: 1;"><h4 style="font-size: 14px; margin-bottom: 2px;">${m.title}</h4><p style="font-size: 11px; color: var(--text-muted);">${m.desc}</p><span style="font-size: 11px; font-weight: 700; color: var(--accent);">✦ +${m.points} pts</span></div><button class="btn ${isDone ? 'btn-outline' : 'btn-primary'}" style="padding: 6px 12px; font-size: 11px; align-self: center;" onclick="openMissionModal('${m.id}')" ${isDone ? 'disabled' : ''}>${isDone ? 'Hecha' : 'Ir'}</button></div>`;
+                return `<div style="display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #FEF3C7, #FDE68A); display: grid; place-items: center; font-size: 18px;">${m.icon}</div>
+                    <div style="flex: 1;">
+                        <h4 style="font-size: 14px; margin-bottom: 2px;">${m.title}</h4>
+                        <p style="font-size: 11px; color: var(--text-muted);">${m.desc}</p>
+                        <span style="font-size: 11px; font-weight: 700; color: var(--accent);">✦ +${m.points} pts</span>
+                    </div>
+                    <button class="btn ${isDone ? 'btn-outline' : 'btn-primary'}" style="padding: 6px 12px; font-size: 11px; align-self: center;" onclick="openMissionModal('${m.id}')" ${isDone ? 'disabled' : ''}>${isDone ? 'Hecha' : 'Ir'}</button>
+                </div>`;
             }).join('');
         }
 
         window.openMissionModal = (id) => {
             const m = missions.find(x => x.id === id);
             if (!m || state.completed.includes(id)) return;
-            openModal('Validar Misión', `<div style="text-align: center; margin-bottom: 12px;"><div style="font-size: 36px;">${m.icon}</div><h3 style="font-size: 18px;">${m.title}</h3><p style="font-size: 12px; color: var(--text-muted);">Sube una foto realizando la actividad.</p></div><div class="upload-zone" id="uploadZone"><input type="file" id="missionPhotoInput" accept="image/*" capture="environment"><div style="font-size: 28px;">📸</div><div style="font-size: 12px;">Tomar foto</div></div><img id="photoPreview" class="upload-preview" style="display: none;"><div id="geminiStatus" style="margin-top: 10px; font-size: 12px; font-weight: 600; text-align: center;"></div><button id="btnValidateMission" class="btn btn-primary btn-block" style="margin-top: 10px;" disabled onclick="validateMissionWithGemini('${id}')">Validar con IA</button>`);
-            const input = $('missionPhotoInput'); const preview = $('photoPreview'); const btn = $('btnValidateMission');
+            openModal('Validar Misión', `
+                <div style="text-align: center; margin-bottom: 12px;">
+                    <div style="font-size: 36px;">${m.icon}</div>
+                    <h3 style="font-size: 18px;">${m.title}</h3>
+                    <p style="font-size: 12px; color: var(--text-muted);">Sube una foto realizando la actividad.</p>
+                </div>
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="missionPhotoInput" accept="image/*" capture="environment" aria-label="Subir foto">
+                    <div style="font-size: 28px;">📸</div>
+                    <div style="font-size: 12px;">Tomar foto</div>
+                </div>
+                <img id="photoPreview" class="upload-preview" style="display: none;" alt="Vista previa">
+                <div id="geminiStatus" style="margin-top: 10px; font-size: 12px; font-weight: 600; text-align: center;"></div>
+                <button id="btnValidateMission" class="btn btn-primary btn-block" style="margin-top: 10px;" disabled onclick="validateMissionWithGemini('${id}')">Validar con IA</button>`);
+            const input = $('missionPhotoInput');
+            const preview = $('photoPreview');
+            const btn = $('btnValidateMission');
             input.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -523,17 +1122,20 @@
             });
         };
 
-        // --- VALIDACIÓN DE MISIÓN USANDO EL WORKER ---
         async function validateMissionWithGemini(missionId) {
-            const fileInput = $('missionPhotoInput'); if (!fileInput.files.length) return;
-            const file = fileInput.files[0]; const statusEl = $('geminiStatus'); const btn = $('btnValidateMission');
-            btn.disabled = true; btn.textContent = 'Validando...'; statusEl.textContent = '🧠 Analizando...'; statusEl.style.color = 'var(--text-muted)';
+            if (!GEMINI_API_KEY) { showToast('⚠️ No se encontró la API Key de Gemini en el .env'); return; }
+            const fileInput = $('missionPhotoInput');
+            if (!fileInput.files.length) return;
+            const file = fileInput.files[0];
+            const statusEl = $('geminiStatus');
+            const btn = $('btnValidateMission');
+            btn.disabled = true; btn.textContent = 'Validando...';
+            statusEl.textContent = '🧠 Analizando...'; statusEl.style.color = 'var(--text-muted)';
             const mission = missions.find(m => m.id === missionId);
-            const placeName = missionId === 'move' ? 'una plaza deportiva de Maipú' : missionId === 'culture' ? 'un centro cultural de Maipú' : 'un área verde de Maipú';
+            const placeName = missionId === 'move' ? 'una plaza deportiva de Maipú' : missionId === 'culture' ? 'un centro cultural de Maipú' : missionId === 'game' ? 'un espacio gamer de Maipú' : 'un área verde de Maipú';
             try {
                 const base64Data = await fileToBase64(file);
-                // Llamamos al WORKER_URL en lugar de Google directamente
-                const response = await fetch(WORKER_URL, {
+                const response = await fetch(GEMINI_URL(), {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza esta imagen. ¿Es una foto tomada en ${placeName} realizando "${mission.title}"? Responde solo "SI" o "NO" y una breve explicación.` }, { inline_data: { mime_type: file.type, data: base64Data.split(',')[1] } }] }] })
                 });
@@ -541,80 +1143,516 @@
                 if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
                     const reply = data.candidates[0].content.parts[0].text.trim().toUpperCase();
                     if (reply.startsWith('SI') || reply.includes('SÍ')) {
-                        statusEl.textContent = '✅ ¡Verificado! Puntos ganados.'; statusEl.style.color = 'var(--primary)';
+                        statusEl.textContent = '✅ ¡Verificado! Puntos ganados.';
+                        statusEl.style.color = 'var(--primary)';
                         completeMission(missionId);
                     } else {
-                        statusEl.textContent = `❌ No se pudo verificar. (${reply.substring(0, 60)})`; statusEl.style.color = '#DC2626';
+                        statusEl.textContent = `❌ No se pudo verificar. (${reply.substring(0, 60)})`;
+                        statusEl.style.color = '#DC2626';
                         btn.disabled = false; btn.textContent = 'Reintentar';
                     }
                 } else {
                     const errMsg = data.error?.message || 'Error desconocido.';
-                    statusEl.textContent = `⚠️ Error del Proxy: ${errMsg.substring(0, 100)}`; statusEl.style.color = '#DC2626';
+                    statusEl.textContent = `⚠️ Error API: ${errMsg.substring(0, 100)}`;
+                    statusEl.style.color = '#DC2626';
                     btn.disabled = false; btn.textContent = 'Reintentar';
                 }
             } catch (error) {
-                statusEl.textContent = `⚠️ Error: ${error.message.substring(0, 80)}`; statusEl.style.color = '#DC2626';
+                statusEl.textContent = `⚠️ Error: ${error.message.substring(0, 80)}`;
+                statusEl.style.color = '#DC2626';
                 btn.disabled = false; btn.textContent = 'Reintentar';
             }
         }
 
-        window.completeMission = (id) => { if (state.completed.includes(id)) return; const m = missions.find(x => x.id === id); state.completed.push(id); state.points += m.points; save(); bootstrap.Modal.getInstance($('genericModal'))?.hide(); showToast(`📸 ¡+${m.points} Puntos!`); };
+        window.completeMission = (id) => {
+            if (state.completed.includes(id)) return;
+            const m = missions.find(x => x.id === id);
+            state.completed.push(id);
+            state.points += m.points;
+            save();
+            hideGenericModal();
+            showToast(`📸 ¡+${m.points} Puntos!`);
+        };
 
         function renderRewards() {
             $('rewardsGrid').innerHTML = rewards.map(r => {
-                const canAfford = state.points >= r.cost; const isRedeemed = state.redeemed.includes(r.id);
-                return `<div class="reward-card"><div style="font-size: 36px; margin-bottom: 8px;">${r.icon}</div><h4 style="font-size: 15px;">${r.name}</h4><p style="font-size: 11px; color: var(--text-muted);">${r.partner}</p><div style="background: #FFF7ED; color: #C2410C; padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 11px; display: inline-block; margin-bottom: 10px;">✦ ${r.cost} pts</div><button class="btn btn-block ${isRedeemed ? 'btn-outline' : canAfford ? 'btn-primary' : 'btn-outline'}" onclick="redeemReward('${r.id}')" ${isRedeemed || !canAfford ? 'disabled' : ''}>${isRedeemed ? 'Canjeado' : canAfford ? 'Canjear' : `Faltan ${r.cost - state.points} pts`}</button></div>`;
+                const canAfford = state.points >= r.cost;
+                const isRedeemed = state.redeemed.includes(r.id);
+                return `<div class="reward-card" style="padding: 14px;">
+                    <div style="font-size: 32px; margin-bottom: 6px;">${r.icon}</div>
+                    <h4 style="font-size: 14px;">${r.name}</h4>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">${r.partner}</p>
+                    <div style="background: #FFF7ED; color: #C2410C; padding: 4px 8px; border-radius: 20px; font-weight: 700; font-size: 10px; display: inline-block; margin-bottom: 8px;">✦ ${r.cost} pts</div>
+                    <button class="btn btn-block ${isRedeemed ? 'btn-outline' : canAfford ? 'btn-primary' : 'btn-outline'}" style="font-size: 11px; padding: 8px 10px;" onclick="redeemReward('${r.id}')" ${isRedeemed || !canAfford ? 'disabled' : ''}>${isRedeemed ? 'Canjeado' : canAfford ? 'Canjear' : `Faltan ${r.cost - state.points}`}</button>
+                </div>`;
             }).join('');
         }
 
         function renderMarkets() {
-            $('marketsGrid').innerHTML = markets.map(m => `<div class="market-card"><div class="market-img-wrap"><img src="${m.image}" loading="lazy"></div><div class="market-info"><div class="market-tag">${m.icon} Feria</div><h3>${m.name}</h3><div style="font-size: 11px; color: var(--text-muted);">📍 ${m.location}</div></div></div>`).join('');
+            $('marketsGrid').innerHTML = markets.map(m => `
+                <div class="market-card">
+                    <div class="market-img-wrap"><img src="${m.image}" loading="lazy" alt="${m.name}"></div>
+                    <div class="market-info">
+                        <div class="market-tag">${m.icon} Feria</div>
+                        <h3>${m.name}</h3>
+                        <div style="font-size: 11px; color: var(--text-muted);">📍 ${m.location}</div>
+                    </div>
+                </div>`).join('');
         }
 
-        window.redeemReward = (id) => {
-            const r = rewards.find(x => x.id === id); if (state.points < r.cost) return; if (state.redeemed.includes(id)) return;
-            state.points -= r.cost; state.redeemed.push(id); save();
-            openModal('¡Canje!', `<div style="text-align: center; padding: 16px;"><div style="font-size: 50px;">${r.icon}</div><h3>${r.name}</h3><p style="font-size: 12px; color: var(--text-muted);">Presenta este QR en <b>${r.partner}</b>.</p><div id="qrContainer" style="display: flex; justify-content: center; margin: 16px 0;"></div><p style="font-size: 11px; color: var(--text-muted);">Válido por 24 hrs.</p></div>`);
+        function renderGaming() {
+            $('gamingGrid').innerHTML = gamingItems.map(g => `
+                <div class="gaming-card">
+                    <div class="gaming-img-wrap"><img src="${g.image}" loading="lazy" alt="${g.title}"></div>
+                    <div class="gaming-info">
+                        <div class="gaming-tag">${g.icon} Gaming · ${g.date}</div>
+                        <h3>${g.title}</h3>
+                        <p>${g.desc}</p>
+                        <div style="font-size: 11px; color: var(--text-muted);">📍 ${g.place}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function renderVideos() {
+            $('videosGrid').innerHTML = videos.map(v => `
+                <div class="video-card" onclick="openVideo('${v.id}')">
+                    <div class="video-img-wrap">
+                        <img src="${v.thumb}" loading="lazy" alt="${v.title}">
+                        <div class="play-overlay"><div class="play-btn">▶</div></div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-tag">🎬 Video</div>
+                        <h3>${v.title}</h3>
+                        <p>📍 ${v.place}</p>
+                    </div>
+                </div>`).join('');
+        }
+
+        window.openVideo = (id) => {
+            const v = videos.find(x => x.id === id);
+            if (!v) return;
+            openModal(v.title, `
+                <div style="background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16/9; display: grid; place-items: center; color: white; text-align: center; padding: 20px;">
+                    <div>
+                        <div style="font-size: 48px; margin-bottom: 12px;">🎬</div>
+                        <p style="font-size: 13px; opacity: 0.9; margin-bottom: 12px;">Video de la comunidad · ${v.place}</p>
+                        <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(v.query)}" target="_blank" rel="noopener" class="btn btn-accent">▶ Ver en YouTube</a>
+                    </div>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px; text-align: center;">Los videos son subidos por la comunidad. ¿Quieres aparecer? Sube tu foto validada en un evento.</p>`);
         };
 
-        $('btnPropose').onclick = () => { openModal('Proponer', `<form id="proposalForm"><div class="form-group"><label>Nombre</label><input type="text" id="pName" required></div><div class="form-group"><label>Categoría</label><select id="pCategory"><option>Deporte</option><option>Música</option><option>Arte</option></select></div><div class="form-group"><label>Plaza</label><input type="text" id="pPlace" required></div><div class="form-group"><label>Descripción</label><textarea id="pDesc" rows="2" required></textarea></div><button type="submit" class="btn btn-primary btn-block">Enviar</button></form>`); $('proposalForm').onsubmit = (e) => { e.preventDefault(); state.proposals.push({ name: $('pName').value, category: $('pCategory').value, place: $('pPlace').value, desc: $('pDesc').value }); save(); bootstrap.Modal.getInstance($('genericModal'))?.hide(); showToast('🌱 ¡Guardado!'); }; };
+        function renderCalendar() {
+            const year = state.calendarYear, month = state.calendarMonth;
+            const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            $('calendarTitle').textContent = `${monthNames[month]} ${year}`;
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrev = new Date(year, month, 0).getDate();
+            const offset = (firstDay + 6) % 7;
+            let html = '';
+            for (let i = offset - 1; i >= 0; i--) html += `<div class="calendar-day other-month">${daysInPrev - i}</div>`;
+            const today = new Date();
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const dayEvents = events.filter(e => e.date === dateStr);
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === d;
+                let cls = 'calendar-day';
+                if (isToday) cls += ' today';
+                if (dayEvents.length) cls += ' event-day';
+                const dots = dayEvents.slice(0, 3).map(() => `<div class="day-event-dot"></div>`).join('');
+                html += `<div class="${cls}" ${dayEvents.length ? `onclick="showDayEvents('${dateStr}')" role="button" tabindex="0"` : ''}>${d}${dayEvents.length ? `<div class="day-events">${dots}</div>` : ''}</div>`;
+            }
+            const totalCells = offset + daysInMonth;
+            const remaining = (7 - (totalCells % 7)) % 7;
+            for (let i = 1; i <= remaining; i++) html += `<div class="calendar-day other-month">${i}</div>`;
+            $('calendarGrid').innerHTML = html;
+        }
 
-        $('btnShowPass').onclick = () => { openModal('Tu Pase', `<div style="text-align: center; padding: 16px;"><div style="font-size: 40px;">🌿</div><h3 style="color: var(--primary);">Ciudad Viva Maipú</h3><p style="font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px;">PASAPORTE JOVEN</p><div style="font-size: 40px; font-weight: 800; color: var(--primary); margin: 12px 0;">${state.points} <span style="font-size: 14px; color: var(--text-muted);">pts</span></div><div id="qrContainer" style="display: flex; justify-content: center; padding: 8px; background: white; border-radius: 10px;"></div></div>`); };
+        window.showDayEvents = (dateStr) => {
+            const dayEvents = events.filter(e => e.date === dateStr);
+            if (!dayEvents.length) return;
+            const [y, m, d] = dateStr.split('-');
+            openModal(`Eventos del ${d}/${m}/${y}`, dayEvents.map(e => `
+                <div style="display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="hideGenericModal(); setTimeout(()=>openEventModal('${e.id}'), 300)">
+                    <img src="${e.image}" alt="${e.title}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 10px;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 11px; color: var(--accent); font-weight: 700;">${e.icon} ${e.category}</div>
+                        <h4 style="font-size: 14px; margin: 2px 0;">${e.title}</h4>
+                        <div style="font-size: 11px; color: var(--text-muted);">◷ ${e.time} · 📍 ${e.placeName}</div>
+                    </div>
+                </div>`).join(''));
+        };
+
+        window.redeemReward = (id) => {
+            const r = rewards.find(x => x.id === id);
+            if (state.points < r.cost) return;
+            if (state.redeemed.includes(id)) return;
+            state.points -= r.cost;
+            state.redeemed.push(id);
+            save();
+            openModal('¡Canje!', `
+                <div style="text-align: center; padding: 16px;">
+                    <div style="font-size: 50px;">${r.icon}</div>
+                    <h3>${r.name}</h3>
+                    <p style="font-size: 12px; color: var(--text-muted);">Presenta este QR en <b>${r.partner}</b>.</p>
+                    <div id="qrContainer" style="display: flex; justify-content: center; margin: 16px 0;"></div>
+                    <p style="font-size: 11px; color: var(--text-muted);">Válido por 24 hrs.</p>
+                </div>`);
+        };
+
+        // ============================================================
+        //  CHATS
+        // ============================================================
+        function getChat(key) {
+            const stored = localStorage.getItem(`cv_chat_${key}`);
+            if (stored) return JSON.parse(stored);
+            return seedChats[key] || [];
+        }
+        function saveChat(key, messages) {
+            localStorage.setItem(`cv_chat_${key}`, JSON.stringify(messages));
+        }
+        function renderChat(key, containerId) {
+            const container = $(containerId);
+            if (!container) return;
+            const msgs = getChat(key);
+            container.innerHTML = msgs.map(m => {
+                const own = m.user === 'Tú';
+                const bot = m.isBot || m.user === 'Vivi';
+                const time = new Date(m.time);
+                const timeStr = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
+                const classes = `chat-msg ${own ? 'own' : ''} ${bot ? 'bot' : ''}`;
+                const author = own ? 'Tú' : (bot ? 'Vivi 🤖' : m.user);
+                return `<div class="${classes}">
+                    <div class="chat-msg-avatar">${own ? 'TÚ' : (bot ? '🤖' : m.avatar)}</div>
+                    <div class="chat-bubble">
+                        <div class="chat-author">${author}</div>
+                        ${escapeHtml(m.text)}
+                        <div class="chat-time">${timeStr}</div>
+                    </div>
+                </div>`;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        // Flag para evitar respuestas duplicadas simultáneas
+        const chatPending = {};
+
+        async function chatReplyWithGemini(chatKey, containerId, systemPrompt) {
+            const container = $(containerId);
+            if (!container) return;
+
+            if (chatPending[chatKey]) return; // ya hay una respuesta en curso
+            if (!GEMINI_API_KEY) {
+                // Fallback: no hay key, agregamos mensaje del bot informándolo
+                const msgs = getChat(chatKey);
+                msgs.push({ user: 'Vivi', text: '⚠️ No tengo configurada mi API Key. Revisa el archivo .env para que pueda responder.', time: Date.now(), avatar: '🤖', isBot: true });
+                saveChat(chatKey, msgs);
+                renderChat(chatKey, containerId);
+                return;
+            }
+            chatPending[chatKey] = true;
+
+            const typing = document.createElement('div');
+            typing.className = 'chat-msg bot';
+            typing.id = `typing_${chatKey}`;
+            typing.innerHTML = `<div class="chat-msg-avatar">🤖</div><div class="chat-bubble"><div class="chat-author">Vivi 🤖</div>Escribiendo…</div>`;
+            container.appendChild(typing);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const history = getChat(chatKey).slice(-8).map(m => ({
+                    role: m.user === 'Tú' ? 'user' : 'model',
+                    parts: [{ text: m.text }]
+                }));
+
+                const contents = [
+                    { role: 'user', parts: [{ text: systemPrompt }] },
+                    { role: 'model', parts: [{ text: 'Entendido. Responderé de forma breve, amigable y útil.' }] },
+                    ...history
+                ];
+
+                const res = await fetch(GEMINI_URL(), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents })
+                });
+                const data = await res.json();
+                document.getElementById(`typing_${chatKey}`)?.remove();
+
+                if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                    const reply = data.candidates[0].content.parts[0].text.trim();
+                    const msgs = getChat(chatKey);
+                    msgs.push({ user: 'Vivi', text: reply, time: Date.now(), avatar: '🤖', isBot: true });
+                    saveChat(chatKey, msgs);
+                    renderChat(chatKey, containerId);
+                } else {
+                    const err = data.error?.message || 'Error desconocido';
+                    const msgs = getChat(chatKey);
+                    msgs.push({ user: 'Vivi', text: `⚠️ ${err.substring(0, 100)}`, time: Date.now(), avatar: '🤖', isBot: true });
+                    saveChat(chatKey, msgs);
+                    renderChat(chatKey, containerId);
+                }
+            } catch (e) {
+                document.getElementById(`typing_${chatKey}`)?.remove();
+                const msgs = getChat(chatKey);
+                msgs.push({ user: 'Vivi', text: '⚠️ Error de conexión. Intenta de nuevo.', time: Date.now(), avatar: '🤖', isBot: true });
+                saveChat(chatKey, msgs);
+                renderChat(chatKey, containerId);
+            } finally {
+                chatPending[chatKey] = false;
+            }
+        }
+
+        // --- Chat general ---
+        window.sendGeneralMessage = async () => {
+            const input = $('generalChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            const msgs = getChat('general');
+            msgs.push({ user: 'Tú', text, time: Date.now(), avatar: 'T' });
+            saveChat('general', msgs);
+            input.value = '';
+            renderChat('general', 'generalChatMessages');
+
+            const systemPrompt = 'Eres "Vivi", asistente del chat general de Ciudad Viva Maipú. La plataforma gamifica la participación juvenil en plazas de Maipú: se ganan puntos (+50 pts por foto validada con IA en evento, +100 a +150 pts completando misiones, +10 pts por inscribirse), hay 5 plazas, 12 eventos (deportes, música, arte, gaming, talleres), 8 recompensas (200–600 pts) y chats por plaza. Responde en español de Chile, breve (máx 3 oraciones), amigable, con emojis ocasionales. Si te preguntan algo que no sabes, recomienda revisar la sección correspondiente.';
+            chatReplyWithGemini('general', 'generalChatMessages', systemPrompt);
+        };
+
+        // --- Chat por plaza ---
+        window.openPlazaChat = (placeId, placeName) => {
+            const key = `plaza_${placeId}`;
+            const place = places.find(p => p.id === placeId);
+            if (!localStorage.getItem(`cv_chat_${key}`)) {
+                saveChat(key, [
+                    { user: 'Vivi', text: `¡Hola! Soy Vivi 👋 Este es el chat de ${placeName}. Puedo contarte sobre la plaza, eventos cercanos o cómo llegar.`, time: Date.now(), avatar: '🤖', isBot: true }
+                ]);
+            }
+            const modalHtml = `
+                <div style="display: flex; flex-direction: column; height: 420px;">
+                    <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 10px;">
+                        <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--info), #0E7490); color: white; display: grid; place-items: center; font-size: 16px;">💬</div>
+                        <div><b style="font-size: 13px;">${placeName}</b><div style="font-size: 10px; color: var(--text-muted);">Con Vivi (IA) + comunidad</div></div>
+                    </div>
+                    <div class="chat-messages" id="plazaChatMessages" style="flex: 1;"></div>
+                    <div class="chat-input-wrap" style="border-radius: 12px; margin-top: 10px;">
+                        <input type="text" id="plazaChatInput" placeholder="Escribe un mensaje..." maxlength="300">
+                        <button id="plazaChatSend" aria-label="Enviar">➤</button>
+                    </div>
+                </div>`;
+            $('genericModalTitle').textContent = `Chat: ${placeName}`;
+            $('genericModalBody').innerHTML = modalHtml;
+            const modalEl = $('genericModal');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+
+            // Esperar a que el modal esté visible antes de enganchar listeners
+            const onShown = () => {
+                modalEl.removeEventListener('shown.bs.modal', onShown);
+                renderChat(key, 'plazaChatMessages');
+
+                const send = () => {
+                    const input = $('plazaChatInput');
+                    const text = input.value.trim();
+                    if (!text) return;
+                    const msgs = getChat(key);
+                    msgs.push({ user: 'Tú', text, time: Date.now(), avatar: 'T' });
+                    saveChat(key, msgs);
+                    input.value = '';
+                    renderChat(key, 'plazaChatMessages');
+
+                    const systemPrompt = `Eres "Vivi", asistente del chat de la plaza "${placeName}" en Ciudad Viva Maipú. Estás en el sector: ${place.address}. Categoría principal: ${place.category}. Descripción: ${place.desc}. Características: ${place.features.join(', ')}. Responde breve (máx 3 oraciones), amigable, con emojis ocasionales, en español de Chile. Si preguntan por eventos de la plaza, sugiere revisar la sección "Agenda Local" o "Calendario".`;
+                    chatReplyWithGemini(key, 'plazaChatMessages', systemPrompt);
+                };
+
+                const input = $('plazaChatInput');
+                const sendBtn = $('plazaChatSend');
+                if (input) input.addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
+                if (sendBtn) sendBtn.addEventListener('click', send);
+            };
+            modalEl.addEventListener('shown.bs.modal', onShown);
+        };
+
+        // ============================================================
+        //  ASISTENTE VIRTUAL (FAB)
+        // ============================================================
+        let assistantHistory = [];
+        $('assistantFab').onclick = () => { $('assistantPanel').classList.toggle('open'); };
+        $('assistantClose').onclick = () => $('assistantPanel').classList.remove('open');
+
+        window.quickAsk = (q) => { $('assistantInput').value = q; sendAssistantMessage(); };
+
+        window.sendAssistantMessage = async () => {
+            const input = $('assistantInput');
+            const text = input.value.trim();
+            if (!text) return;
+            if (!GEMINI_API_KEY) { addAssistantMsg('bot', '⚠️ No configuré mi API Key. Revisa el .env.'); return; }
+            input.value = '';
+            addAssistantMsg('user', text);
+            assistantHistory.push({ role: 'user', parts: [{ text }] });
+            const typing = document.createElement('div');
+            typing.className = 'assistant-msg bot';
+            typing.id = 'typingIndicator';
+            typing.textContent = '🧠 Pensando...';
+            $('assistantMessages').appendChild(typing);
+            $('assistantMessages').scrollTop = $('assistantMessages').scrollHeight;
+            try {
+                const response = await fetch(GEMINI_URL(), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            { role: 'user', parts: [{ text: 'Contexto: Eres "Vivi", asistente virtual de Ciudad Viva Maipú, una plataforma que gamifica la participación juvenil en plazas de Maipú. Puntos: +50 por foto validada con IA en evento, +100 a +150 por misiones, +10 por inscripción. Recompensas desde 200 a 600 pts. 5 plazas, 12 eventos (deportes, cultura, gaming, ferias), chats comunitarios generales y por plaza. Responde breve (máx 3 oraciones), amigable, juvenil, con emojis ocasionales, en español de Chile. No inventes datos.' }] },
+                            ...assistantHistory
+                        ]
+                    })
+                });
+                const data = await response.json();
+                typing.remove();
+                if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                    const reply = data.candidates[0].content.parts[0].text.trim();
+                    addAssistantMsg('bot', reply);
+                    assistantHistory.push({ role: 'model', parts: [{ text: reply }] });
+                } else {
+                    addAssistantMsg('bot', 'Ups, no pude procesar tu mensaje. Intenta de nuevo.');
+                }
+            } catch (e) {
+                typing.remove();
+                addAssistantMsg('bot', '⚠️ Error de conexión. Revisa tu internet.');
+            }
+        };
+
+        function addAssistantMsg(role, text) {
+            const div = document.createElement('div');
+            div.className = `assistant-msg ${role}`;
+            div.textContent = text;
+            $('assistantMessages').appendChild(div);
+            $('assistantMessages').scrollTop = $('assistantMessages').scrollHeight;
+        }
+        $('assistantInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAssistantMessage(); });
+
+        // ============================================================
+        //  OTROS
+        // ============================================================
+        $('btnPropose').onclick = () => {
+            openModal('Proponer', `
+                <form id="proposalForm">
+                    <div class="form-group"><label for="pName">Nombre</label><input type="text" id="pName" required></div>
+                    <div class="form-group"><label for="pCategory">Categoría</label><select id="pCategory"><option>Deporte</option><option>Música</option><option>Arte</option><option>Gaming</option></select></div>
+                    <div class="form-group"><label for="pPlace">Plaza</label><input type="text" id="pPlace" required></div>
+                    <div class="form-group"><label for="pDesc">Descripción</label><textarea id="pDesc" rows="2" required></textarea></div>
+                    <button type="submit" class="btn btn-primary btn-block">Enviar</button>
+                </form>`);
+            $('proposalForm').onsubmit = (e) => {
+                e.preventDefault();
+                state.proposals.push({ name: $('pName').value, category: $('pCategory').value, place: $('pPlace').value, desc: $('pDesc').value });
+                save();
+                hideGenericModal();
+                showToast('🌱 ¡Guardado!');
+            };
+        };
+
+        $('btnShowPass').onclick = () => {
+            const level = getLevel(state.points);
+            openModal('Tu Pase', `
+                <div style="text-align: center; padding: 16px;">
+                    <div style="font-size: 40px;">🌿</div>
+                    <h3 style="color: var(--primary);">Ciudad Viva Maipú</h3>
+                    <p style="font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px;">PASAPORTE JOVEN</p>
+                    <div style="margin: 8px 0;"><span class="level-badge" style="font-size: 13px; padding: 6px 14px;">${level.icon} Nivel ${getLevelNum(state.points)} · ${level.name}</span></div>
+                    <div style="font-size: 40px; font-weight: 800; color: var(--primary); margin: 12px 0;">${state.points} <span style="font-size: 14px; color: var(--text-muted);">pts</span></div>
+                    <div id="qrContainer" style="display: flex; justify-content: center; padding: 8px; background: white; border-radius: 10px;"></div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 12px;">Muestra este código en ferias y eventos aliados.</div>
+                </div>`);
+        };
+
+        $('btnPointsInfo').onclick = () => {
+            openModal('¿Cómo gano puntos?', `
+                <div style="font-size: 13px; line-height: 1.7;">
+                    <div style="display: flex; gap: 10px; padding: 10px; background: var(--bg-body); border-radius: 10px; margin-bottom: 8px;">
+                        <span style="font-size: 22px;">📸</span>
+                        <div><b>+50 pts</b> · Sube foto validada con IA en un evento</div>
+                    </div>
+                    <div style="display: flex; gap: 10px; padding: 10px; background: var(--bg-body); border-radius: 10px; margin-bottom: 8px;">
+                        <span style="font-size: 22px;">🎯</span>
+                        <div><b>+100 a +150 pts</b> · Completa misiones del pasaporte</div>
+                    </div>
+                    <div style="display: flex; gap: 10px; padding: 10px; background: var(--bg-body); border-radius: 10px; margin-bottom: 8px;">
+                        <span style="font-size: 22px;">🎟️</span>
+                        <div><b>+10 pts</b> · Inscríbete en un evento</div>
+                    </div>
+                    <div style="display: flex; gap: 10px; padding: 10px; background: var(--bg-body); border-radius: 10px;">
+                        <span style="font-size: 22px;">💬</span>
+                        <div><b>Bonus</b> · Participa en la comunidad y propone actividades</div>
+                    </div>
+                    <p style="margin-top: 14px; font-size: 12px; color: var(--text-muted);">💡 Los puntos se guardan en tu dispositivo. Puedes canjearlos desde 200 pts.</p>
+                </div>`);
+        };
 
         $('btnProfile').onclick = () => $('btnShowPass').click();
+        $('pointsBadge').onclick = () => $('btnPointsInfo').click();
 
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.onclick = (e) => {
-                document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('active'); b.style.background = 'transparent'; b.style.color = 'var(--text-main)'; });
-                e.target.classList.add('active'); e.target.style.background = 'var(--primary)'; e.target.style.color = 'white';
-                state.filter = e.target.dataset.filter; renderEvents();
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                state.filter = e.currentTarget.dataset.filter;
+                renderEvents();
             };
         });
+
+        $('calPrev').onclick = () => {
+            state.calendarMonth--;
+            if (state.calendarMonth < 0) { state.calendarMonth = 11; state.calendarYear--; }
+            renderCalendar();
+        };
+        $('calNext').onclick = () => {
+            state.calendarMonth++;
+            if (state.calendarMonth > 11) { state.calendarMonth = 0; state.calendarYear++; }
+            renderCalendar();
+        };
 
         $('btnLocate').onclick = () => {
             if (!navigator.geolocation || !state.map) { showToast('Geolocalización no disponible.'); return; }
             showToast('Buscando...');
             navigator.geolocation.getCurrentPosition(
-                (pos) => { state.map.flyTo([pos.coords.latitude, pos.coords.longitude], 16); L.circleMarker([pos.coords.latitude, pos.coords.longitude], { radius: 8, color: '#fff', weight: 3, fillColor: '#F77F00', fillOpacity: 1 }).addTo(state.map).bindPopup('Estás aquí').openPopup(); showToast('Ubicación encontrada.'); },
+                (pos) => {
+                    state.map.flyTo([pos.coords.latitude, pos.coords.longitude], 16);
+                    L.circleMarker([pos.coords.latitude, pos.coords.longitude], { radius: 8, color: '#fff', weight: 3, fillColor: '#F77F00', fillOpacity: 1 }).addTo(state.map).bindPopup('Estás aquí').openPopup();
+                    showToast('Ubicación encontrada.');
+                },
                 () => showToast('No se pudo acceder a tu ubicación.')
             );
         };
 
         function setTheme(theme) {
-            document.documentElement.setAttribute('data-bs-theme', theme); state.theme = theme; localStorage.setItem('cv_theme', theme);
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            state.theme = theme;
+            localStorage.setItem('cv_theme', theme);
             $('btnTheme').textContent = theme === 'dark' ? '☀️' : '🌙';
-            if (state.map) { state.map.remove(); initMap(); }
+            if (state.map) { state.map.remove(); state.map = null; initMap(); }
         }
         $('btnTheme').onclick = () => { const newTheme = state.theme === 'light' ? 'dark' : 'light'; setTheme(newTheme); };
         setTheme(state.theme);
 
-        window.scrollToSection = (id) => { bootstrap.Modal.getInstance($('genericModal'))?.hide(); document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
+        window.scrollToSection = (id) => {
+            // Cerrar TODOS los modales posibles antes de scrollear
+            hideGenericModal();
+            bootstrap.Modal.getInstance($('placeModal'))?.hide();
+            setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 150);
+        };
 
-        // --- INICIALIZACIÓN ---
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            const env = await loadEnv();
+            MAPTILER_API_KEY = env.VITE_MAPTILER_API_KEY || '';
+            GEMINI_API_KEY = env.VITE_GEMINI_API_KEY || '';
             setTimeout(() => {
                 updateUI();
                 initMap();
+                renderChat('general', 'generalChatMessages');
             }, 600);
         });
     </script>
