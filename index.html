@@ -52,14 +52,12 @@
         button, a { -webkit-tap-highlight-color: transparent; }
         button { cursor: pointer; border: none; outline: none; }
 
-        /* --- CONTENEDOR --- */
         .container { max-width: 1280px; padding-left: 1.5rem; padding-right: 1.5rem; margin-left: auto; margin-right: auto; width: 100%; }
         @media (min-width: 768px) { .container { padding-left: 2.5rem; padding-right: 2.5rem; } }
         @media (min-width: 1200px) { .container { padding-left: 3rem; padding-right: 3rem; } }
         .section { padding: 28px 0; }
         @media (min-width: 768px) { .section { padding: 60px 0; } }
 
-        /* Card destacada: margen exterior + interno correctos en móvil */
         .section-highlight {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
@@ -83,7 +81,6 @@
         .logo-text { display: flex; flex-direction: column; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .logo-text span { font-size: 7px; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 1px; font-weight: 600; }
         @media (min-width: 768px) { .logo { font-size: 20px; gap: 12px; } .logo-icon { width: 42px; height: 42px; border-radius: 12px; font-size: 21px; } .logo-text span { font-size: 10px; letter-spacing: 1.2px; margin-top: 2px; } }
-        /* Ocultar texto del logo en pantallas MUY pequeñas para que el header no desborde */
         @media (max-width: 380px) { .logo-text { display: none; } }
         .nav-links { display: none; gap: 22px; }
         @media (min-width: 992px) { .nav-links { display: flex; } }
@@ -196,7 +193,6 @@
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn:hover:not(:disabled) { transform: translateY(-1px); }
 
-        /* Filtros activos: clase CSS (no inline) para respetar el tema */
         .filter-btn { padding: 6px 12px; font-size: 11px; }
         .filter-btn.active {
             background: var(--primary) !important;
@@ -326,15 +322,12 @@
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text-main); color: var(--bg-card); padding: 12px 20px; border-radius: 50px; font-weight: 500; font-size: 13px; opacity: 0; pointer-events: none; transition: var(--transition); z-index: 3000; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; max-width: 90%; text-align: center; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* --- LEVEL BADGE --- */
         .level-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--yellow); color: #78350F; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
 
-        /* --- FORM --- */
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); font-size: 13px; }
 
-        /* --- PLAY OVERLAY --- */
         .play-overlay { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,0.28); }
         .play-overlay .play-btn { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.95); color: var(--accent-2); display: grid; place-items: center; font-size: 16px; box-shadow: var(--shadow-md); }
 
@@ -345,18 +338,16 @@
         .custom-marker.active { border-color: var(--accent); background: #FFF7ED; }
         @media (min-width: 768px) { .custom-marker { width: 40px; height: 40px; font-size: 18px; } }
 
-        /* --- FOOTER --- */
         footer { background: #0F172A; color: #94A3B8; padding: 40px 0 24px; margin-top: 40px; }
         footer a { color: #94A3B8; }
 
-        /* --- EMPTY STATE --- */
         .empty-state { grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-muted); }
         .empty-state .empty-icon { font-size: 44px; margin-bottom: 10px; opacity: 0.6; }
     </style>
 </head>
 <body>
 
-    <!-- SVG sprite para Instagram (reutilizable) -->
+    <!-- SVG sprite Instagram -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
         <symbol id="icon-instagram" viewBox="0 0 24 24">
             <path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
@@ -380,11 +371,11 @@
                 <a href="#recompensas">Recompensas</a>
                 <a href="#gaming">Gaming</a>
                 <a href="#comunidad">Comunidad</a>
-                <a href="https://www.instagram.com/ciudadvivamaipu" target="_blank" rel="noopener">Instagram</a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
             </nav>
             <div class="header-actions">
                 <div class="points-badge" id="pointsBadge" title="Toca para saber cómo ganar puntos">✦ <span id="headerPoints">0</span></div>
-                <a href="https://www.instagram.com/ciudadvivamaipu" target="_blank" rel="noopener" class="btn-instagram" aria-label="Instagram">
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="btn-instagram" aria-label="Instagram">
                     <svg aria-hidden="true"><use href="#icon-instagram"/></svg>
                 </a>
                 <button class="btn-theme" id="btnTheme" title="Cambiar tema" aria-label="Cambiar tema">🌙</button>
@@ -639,14 +630,14 @@
                 </div>
                 <p style="font-size: 13px; max-width: 420px; line-height: 1.6;">El pasaporte joven de Maipú. Participa, conecta y gana recompensas reales por moverte en tu barrio.</p>
                 <div style="display: flex; gap: 12px;">
-                    <a href="https://www.instagram.com/ciudadvivamaipu" target="_blank" rel="noopener" class="btn-instagram" style="width: 44px; height: 44px;" aria-label="Instagram">
+                    <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="btn-instagram" style="width: 44px; height: 44px;" aria-label="Instagram">
                         <svg aria-hidden="true" style="width: 20px; height: 20px;"><use href="#icon-instagram"/></svg>
                     </a>
                     <a href="https://www.tiktok.com/" target="_blank" rel="noopener" style="width: 44px; height: 44px; border-radius: 50%; background: #000; color: white; display: grid; place-items: center; text-decoration: none; font-size: 20px;" aria-label="TikTok">♪</a>
                 </div>
                 <p style="font-size: 12px;">© 2026 Ciudad Viva Maipú · Prototipo Demostrativo</p>
                 <div style="display: flex; gap: 16px; font-size: 12px; flex-wrap: wrap; justify-content: center;">
-                    <a href="https://www.instagram.com/ciudadvivamaipu" target="_blank" rel="noopener">Instagram</a>
+                    <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
                     <span>·</span>
                     <span>Maipú, Chile</span>
                     <span>·</span>
@@ -699,27 +690,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
-        async function loadEnv() {
-            try {
-                const response = await fetch('./.env');
-                if (!response.ok) throw new Error('No se encontró el archivo .env');
-                const text = await response.text();
-                const env = {};
-                text.split('\n').forEach(line => {
-                    const [key, value] = line.split('=');
-                    if (key && value) env[key.trim()] = value.trim();
-                });
-                return env;
-            } catch (error) {
-                console.warn('No se pudo cargar el .env, usando valores por defecto.', error);
-                return {};
-            }
-        }
+        // ============================================================
+        //  CONFIGURACIÓN SEGURA CON PROXY DE CLOUDFLARE
+        // ============================================================
+        const APP_CONFIG = {
+            MAPTILER_API_KEY: 'MUuCQnCEDGGfscdbvSKO', // Recuerda restringirla en tu panel de MapTiler
+            GEMINI_PROXY_URL: 'https://proxy-gemini.elbaibi323.workers.dev',
+            GEMINI_MODEL: 'gemini-2.0-flash-lite'
+        };
 
-        let MAPTILER_API_KEY = '';
-        let GEMINI_API_KEY = '';
-        const GEMINI_MODEL = 'gemini-3.1-flash-lite';
-        const GEMINI_URL = () => `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+        const MAPTILER_API_KEY = APP_CONFIG.MAPTILER_API_KEY;
+        const GEMINI_PROXY_URL = APP_CONFIG.GEMINI_PROXY_URL;
+        const GEMINI_MODEL = APP_CONFIG.GEMINI_MODEL;
+        
+        // Esta URL ahora apunta a tu Worker seguro
+        const GEMINI_URL = () => `${GEMINI_PROXY_URL}?model=${encodeURIComponent(GEMINI_MODEL)}`;
 
         // --- IMÁGENES ---
         const IMG = {
@@ -739,7 +724,6 @@
             street: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
             groceries: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=800&q=80',
             metro: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80',
-            // Gaming: imágenes distintas por juego
             gamingFifa: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=800&q=80',
             gamingSmash: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
             gamingMobile: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800&q=80'
@@ -794,7 +778,6 @@
             { id: 'mercado-maipucino', name: 'Mercado Maipucino', location: 'Estación Gutiérrez', icon: '🥕', image: IMG.market }
         ];
 
-        // Gaming con imágenes temáticas por juego
         const gamingItems = [
             { id: 'g1', title: 'Torneo FIFA 2026', place: 'Plaza de la Juventud', icon: '⚽', image: IMG.gamingFifa, desc: 'Torneo competitivo de fútbol virtual con premios en puntos y productos locales.', date: '27 DIC · 15:00' },
             { id: 'g2', title: 'Smash Bros Local', place: 'Parque Tres Poniente', icon: '🥊', image: IMG.gamingSmash, desc: 'Encuentro casual de Super Smash para todos los niveles y edades.', date: '15 DIC · 17:00' },
@@ -841,7 +824,6 @@
         };
         const showToast = (msg) => { const el = $('toast'); el.innerHTML = msg; el.classList.add('show'); clearTimeout(el.timer); el.timer = setTimeout(() => el.classList.remove('show'), 3000); };
 
-        // openModal con getOrCreateInstance para evitar múltiples instancias
         const openModal = (title, html) => {
             $('genericModalTitle').textContent = title;
             $('genericModalBody').innerHTML = html;
@@ -893,10 +875,9 @@
 
         function initMap() {
             if (!MAPTILER_API_KEY) {
-                $('map').innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;"><p>No se encontró la clave de MapTiler en el archivo .env</p></div>`;
+                $('map').innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;"><p>No se encontró la clave de MapTiler.</p></div>`;
                 return;
             }
-            // Reset markers al re-inicializar (evita duplicados al cambiar tema)
             state.markers = [];
             state.map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([-33.511, -70.758], 14);
             const tileUrl = state.theme === 'dark' ? `https://api.maptiler.com/maps/streets-v2-dark/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}` : `https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}`;
@@ -1025,7 +1006,7 @@
         };
 
         async function validateEventPhoto(eventId) {
-            if (!GEMINI_API_KEY) { showToast('⚠️ No se encontró la API Key de Gemini en el .env'); return; }
+            if (!GEMINI_PROXY_URL) { showToast('⚠️ Falta configurar el proxy de Gemini'); return; }
             const fileInput = $(`eventPhotoInput-${eventId}`);
             if (!fileInput.files.length) return;
             const file = fileInput.files[0];
@@ -1123,7 +1104,7 @@
         };
 
         async function validateMissionWithGemini(missionId) {
-            if (!GEMINI_API_KEY) { showToast('⚠️ No se encontró la API Key de Gemini en el .env'); return; }
+            if (!GEMINI_PROXY_URL) { showToast('⚠️ Falta configurar el proxy de Gemini'); return; }
             const fileInput = $('missionPhotoInput');
             if (!fileInput.files.length) return;
             const file = fileInput.files[0];
@@ -1338,18 +1319,16 @@
             return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
 
-        // Flag para evitar respuestas duplicadas simultáneas
         const chatPending = {};
 
         async function chatReplyWithGemini(chatKey, containerId, systemPrompt) {
             const container = $(containerId);
             if (!container) return;
 
-            if (chatPending[chatKey]) return; // ya hay una respuesta en curso
-            if (!GEMINI_API_KEY) {
-                // Fallback: no hay key, agregamos mensaje del bot informándolo
+            if (chatPending[chatKey]) return;
+            if (!GEMINI_PROXY_URL) {
                 const msgs = getChat(chatKey);
-                msgs.push({ user: 'Vivi', text: '⚠️ No tengo configurada mi API Key. Revisa el archivo .env para que pueda responder.', time: Date.now(), avatar: '🤖', isBot: true });
+                msgs.push({ user: 'Vivi', text: '⚠️ No tengo configurado mi servidor proxy. Contacta al admin.', time: Date.now(), avatar: '🤖', isBot: true });
                 saveChat(chatKey, msgs);
                 renderChat(chatKey, containerId);
                 return;
@@ -1407,7 +1386,6 @@
             }
         }
 
-        // --- Chat general ---
         window.sendGeneralMessage = async () => {
             const input = $('generalChatInput');
             const text = input.value.trim();
@@ -1422,7 +1400,6 @@
             chatReplyWithGemini('general', 'generalChatMessages', systemPrompt);
         };
 
-        // --- Chat por plaza ---
         window.openPlazaChat = (placeId, placeName) => {
             const key = `plaza_${placeId}`;
             const place = places.find(p => p.id === placeId);
@@ -1449,7 +1426,6 @@
             const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
             modal.show();
 
-            // Esperar a que el modal esté visible antes de enganchar listeners
             const onShown = () => {
                 modalEl.removeEventListener('shown.bs.modal', onShown);
                 renderChat(key, 'plazaChatMessages');
@@ -1477,7 +1453,7 @@
         };
 
         // ============================================================
-        //  ASISTENTE VIRTUAL (FAB)
+        //  ASISTENTE VIRTUAL
         // ============================================================
         let assistantHistory = [];
         $('assistantFab').onclick = () => { $('assistantPanel').classList.toggle('open'); };
@@ -1489,7 +1465,7 @@
             const input = $('assistantInput');
             const text = input.value.trim();
             if (!text) return;
-            if (!GEMINI_API_KEY) { addAssistantMsg('bot', '⚠️ No configuré mi API Key. Revisa el .env.'); return; }
+            if (!GEMINI_PROXY_URL) { addAssistantMsg('bot', '⚠️ No tengo configurado el servidor proxy.'); return; }
             input.value = '';
             addAssistantMsg('user', text);
             assistantHistory.push({ role: 'user', parts: [{ text }] });
@@ -1639,21 +1615,26 @@
         setTheme(state.theme);
 
         window.scrollToSection = (id) => {
-            // Cerrar TODOS los modales posibles antes de scrollear
             hideGenericModal();
             bootstrap.Modal.getInstance($('placeModal'))?.hide();
             setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 150);
         };
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const env = await loadEnv();
-            MAPTILER_API_KEY = env.VITE_MAPTILER_API_KEY || '';
-            GEMINI_API_KEY = env.VITE_GEMINI_API_KEY || '';
+        // ============================================================
+        //  INICIALIZACIÓN
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('%c🔑 Ciudad Viva configurado', 'font-weight:bold;color:#2D6A4F;font-size:14px', {
+                mapTiler: MAPTILER_API_KEY ? '✅ ' + MAPTILER_API_KEY.slice(0, 8) + '…' : '❌',
+                geminiProxy: GEMINI_PROXY_URL ? '✅ Configurado' : '❌',
+                modelo: GEMINI_MODEL
+            });
+
             setTimeout(() => {
                 updateUI();
                 initMap();
                 renderChat('general', 'generalChatMessages');
-            }, 600);
+            }, 400);
         });
     </script>
 </body>
