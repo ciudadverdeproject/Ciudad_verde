@@ -593,21 +593,21 @@
         <div class="section-header">
             <div>
                 <h2>Comunidad Viva</h2>
-                <p>Chatea con Vivi y otros jóvenes, propone actividades y coordina.</p>
+                <p>Chatea con otros jóvenes del barrio (simulados), propone actividades y coordina.</p>
             </div>
         </div>
         <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
             <div class="chat-container">
-                <div class="chat-header">
-                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: grid; place-items: center; font-size: 18px;">💬</div>
+                <div class="chat-header" style="background: linear-gradient(135deg, var(--primary), var(--vibrant));">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: grid; place-items: center; font-size: 18px;">👥</div>
                     <div>
-                        <h4>Chat General de Maipú</h4>
-                        <p>Con Vivi (IA) + comunidad</p>
+                        <h4>Chat Comunitario Maipú</h4>
+                        <p>Solo vecinos (Matías, Valentina, Diego...)</p>
                     </div>
                 </div>
                 <div class="chat-messages" id="generalChatMessages"></div>
                 <div class="chat-input-wrap">
-                    <input type="text" id="generalChatInput" placeholder="Pregúntale a Vivi o saluda..." maxlength="300">
+                    <input type="text" id="generalChatInput" placeholder="Escribe un mensaje al grupo..." maxlength="300">
                     <button onclick="sendGeneralMessage()" aria-label="Enviar">➤</button>
                 </div>
             </div>
@@ -672,12 +672,12 @@
             <button id="assistantClose" aria-label="Cerrar">×</button>
         </div>
         <div class="assistant-messages" id="assistantMessages">
-            <div class="assistant-msg bot">¡Hola! 👋 Soy Vivi, tu asistente virtual. Puedo ayudarte con dudas sobre las plazas, cómo ganar puntos, eventos y recompensas. ¿Qué quieres saber?</div>
+            <div class="assistant-msg bot">¡Hola! 👋 Soy Vivi, tu asistente virtual. Sé exactamente qué eventos hay, fechas, lugares y cómo funcionan los puntos. ¿Qué necesitas saber?</div>
         </div>
         <div class="assistant-quick">
-            <button onclick="quickAsk('¿Cómo gano puntos?')">¿Cómo gano puntos?</button>
             <button onclick="quickAsk('¿Qué eventos hay hoy?')">Eventos de hoy</button>
-            <button onclick="quickAsk('¿Cómo canjeo recompensas?')">Canjear</button>
+            <button onclick="quickAsk('¿Cómo gano puntos?')">¿Cómo gano puntos?</button>
+            <button onclick="quickAsk('¿Dónde canjeo?')">Canjear</button>
         </div>
         <div class="assistant-input-wrap">
             <input type="text" id="assistantInput" placeholder="Escribe tu pregunta..." maxlength="300">
@@ -691,19 +691,17 @@
 
     <script>
         // ============================================================
-        //  CONFIGURACIÓN SEGURA CON PROXY DE CLOUDFLARE
+        //  CONFIGURACIÓN
         // ============================================================
         const APP_CONFIG = {
-            MAPTILER_API_KEY: 'MUuCQnCEDGGfscdbvSKO', // Recuerda restringirla en tu panel de MapTiler
+            MAPTILER_API_KEY: 'MUuCQnCEDGGfscdbvSKO',
             GEMINI_PROXY_URL: 'https://proxy-gemini.elbaibi323.workers.dev',
-            GEMINI_MODEL: 'gemini-3.5-flash-lite'
+            GEMINI_MODEL: 'gemini-3.5-flash-lite' // Actualizado según tu petición
         };
 
         const MAPTILER_API_KEY = APP_CONFIG.MAPTILER_API_KEY;
         const GEMINI_PROXY_URL = APP_CONFIG.GEMINI_PROXY_URL;
         const GEMINI_MODEL = APP_CONFIG.GEMINI_MODEL;
-        
-        // Esta URL ahora apunta a tu Worker seguro
         const GEMINI_URL = () => `${GEMINI_PROXY_URL}?model=${encodeURIComponent(GEMINI_MODEL)}`;
 
         // --- IMÁGENES ---
@@ -793,9 +791,11 @@
             { id: 'v6', title: 'Torneo Básquetbol 3x3', place: 'Estadio Bueras', thumb: IMG.basketball, query: 'basquetbol 3x3 torneo' }
         ];
 
+        // Chat general ahora simula personas
         const seedChats = {
             general: [
-                { user: 'Vivi', text: '¡Hola! 👋 Soy Vivi, tu asistente. Pregúntame por eventos, cómo ganar puntos o qué hacer este finde.', time: Date.now() - 3600000, avatar: '🤖', isBot: true }
+                { user: 'Valentina', text: '¡Hola! ¿Alguien va a la tocata navideña el 21? 🎸', time: Date.now() - 3600000, avatar: '🎨', isBot: false },
+                { user: 'Matías', text: 'Yo voy, pero después me voy al torneo de FIFA 🎮', time: Date.now() - 3500000, avatar: '🎮', isBot: false }
             ]
         };
 
@@ -1283,7 +1283,36 @@
         };
 
         // ============================================================
-        //  CHATS
+        //  GENERADOR DE CONTEXTO PARA LA IA
+        // ============================================================
+        function getAppContext() {
+            let ctx = `DATOS REALES DE LA PLATAFORMA CIUDAD VIVA MAIPÚ:\n`;
+            ctx += `El usuario actual tiene ${state.points} puntos.\n\n`;
+            
+            ctx += `EVENTOS DISPONIBLES:\n`;
+            events.forEach(e => {
+                ctx += `- ${e.dateDay} de ${e.dateMonth} a las ${e.time}: "${e.title}" en ${e.placeName}. Descripción: ${e.desc} (${e.spots}).\n`;
+            });
+            
+            ctx += `\nPLAZAS Y LUGARES:\n`;
+            places.forEach(p => {
+                ctx += `- ${p.name} (${p.address}): ${p.desc}. Características: ${p.features.join(', ')}.\n`;
+            });
+            
+            ctx += `\nRECOMPENSAS (canjeables con puntos):\n`;
+            rewards.forEach(r => {
+                ctx += `- ${r.name} en ${r.partner} por ${r.cost} puntos.\n`;
+            });
+            
+            ctx += `\nCÓMO GANAR PUNTOS:\n`;
+            ctx += `- +10 pts por inscribirse en un evento.\n`;
+            ctx += `- +50 pts por subir foto validada en un evento.\n`;
+            ctx += `- +100 a +150 pts por completar misiones del pasaporte.\n`;
+            return ctx;
+        }
+
+        // ============================================================
+        //  CHATS Y COMUNIDAD
         // ============================================================
         function getChat(key) {
             const stored = localStorage.getItem(`cv_chat_${key}`);
@@ -1303,9 +1332,10 @@
                 const time = new Date(m.time);
                 const timeStr = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
                 const classes = `chat-msg ${own ? 'own' : ''} ${bot ? 'bot' : ''}`;
-                const author = own ? 'Tú' : (bot ? 'Vivi 🤖' : m.user);
+                const author = own ? 'Tú' : m.user;
+                const avatar = own ? 'TÚ' : (m.avatar || (bot ? '🤖' : '👤'));
                 return `<div class="${classes}">
-                    <div class="chat-msg-avatar">${own ? 'TÚ' : (bot ? '🤖' : m.avatar)}</div>
+                    <div class="chat-msg-avatar">${avatar}</div>
                     <div class="chat-bubble">
                         <div class="chat-author">${author}</div>
                         ${escapeHtml(m.text)}
@@ -1321,36 +1351,48 @@
 
         const chatPending = {};
 
-        async function chatReplyWithGemini(chatKey, containerId, systemPrompt) {
-            const container = $(containerId);
-            if (!container) return;
+        // Chat Comunitario (Simula personas)
+        window.sendGeneralMessage = async () => {
+            const input = $('generalChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const msgs = getChat('general');
+            msgs.push({ user: 'Tú', text, time: Date.now(), avatar: 'T' });
+            saveChat('general', msgs);
+            input.value = '';
+            renderChat('general', 'generalChatMessages');
 
-            if (chatPending[chatKey]) return;
-            if (!GEMINI_PROXY_URL) {
-                const msgs = getChat(chatKey);
-                msgs.push({ user: 'Vivi', text: '⚠️ No tengo configurado mi servidor proxy. Contacta al admin.', time: Date.now(), avatar: '🤖', isBot: true });
-                saveChat(chatKey, msgs);
-                renderChat(chatKey, containerId);
-                return;
-            }
-            chatPending[chatKey] = true;
+            // Simular respuesta de vecino
+            const personas = [
+                { name: 'Matías', avatar: '🎮', desc: '18 años, gamer, le encanta FIFA y el básquetbol' },
+                { name: 'Valentina', avatar: '🎨', desc: '19 años, artista, le gusta el muralismo y las tocatas' },
+                { name: 'Diego', avatar: '🏀', desc: '17 años, deportista, va a todos los torneos de footvolley' },
+                { name: 'Camila', avatar: '🛹', desc: '20 años, skater, le gusta el trail running' }
+            ];
+            const persona = personas[Math.floor(Math.random() * personas.length)];
 
+            const container = $('generalChatMessages');
             const typing = document.createElement('div');
             typing.className = 'chat-msg bot';
-            typing.id = `typing_${chatKey}`;
-            typing.innerHTML = `<div class="chat-msg-avatar">🤖</div><div class="chat-bubble"><div class="chat-author">Vivi 🤖</div>Escribiendo…</div>`;
+            typing.id = `typing_general`;
+            typing.innerHTML = `<div class="chat-msg-avatar">${persona.avatar}</div><div class="chat-bubble"><div class="chat-author">${persona.name}</div>Escribiendo…</div>`;
             container.appendChild(typing);
             container.scrollTop = container.scrollHeight;
 
             try {
-                const history = getChat(chatKey).slice(-8).map(m => ({
+                const history = getChat('general').slice(-6).map(m => ({
                     role: m.user === 'Tú' ? 'user' : 'model',
-                    parts: [{ text: m.text }]
+                    parts: [{ text: m.user === 'Tú' ? m.text : `${m.user}: ${m.text}` }]
                 }));
+
+                const systemPrompt = `Eres ${persona.name}, un joven real de Maipú. ${persona.desc}. Estás chateando en el grupo de la comunidad de Ciudad Viva.
+                Responde al último mensaje de forma natural, usando español de Chile, jerga juvenil y de forma relajada. Sé breve (máx 2 oraciones).
+                NO actúes como un asistente virtual, eres un humano. Si te preguntan por datos específicos (eventos, fechas, puntos), usa este contexto real:\n${getAppContext()}`;
 
                 const contents = [
                     { role: 'user', parts: [{ text: systemPrompt }] },
-                    { role: 'model', parts: [{ text: 'Entendido. Responderé de forma breve, amigable y útil.' }] },
+                    { role: 'model', parts: [{ text: `Entendido, soy ${persona.name}.` }] },
                     ...history
                 ];
 
@@ -1360,107 +1402,23 @@
                     body: JSON.stringify({ contents })
                 });
                 const data = await res.json();
-                document.getElementById(`typing_${chatKey}`)?.remove();
+                document.getElementById(`typing_general`)?.remove();
 
                 if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
                     const reply = data.candidates[0].content.parts[0].text.trim();
-                    const msgs = getChat(chatKey);
-                    msgs.push({ user: 'Vivi', text: reply, time: Date.now(), avatar: '🤖', isBot: true });
-                    saveChat(chatKey, msgs);
-                    renderChat(chatKey, containerId);
+                    const newMsgs = getChat('general');
+                    newMsgs.push({ user: persona.name, text: reply, time: Date.now(), avatar: persona.avatar, isBot: false });
+                    saveChat('general', newMsgs);
+                    renderChat('general', 'generalChatMessages');
                 } else {
-                    const err = data.error?.message || 'Error desconocido';
-                    const msgs = getChat(chatKey);
-                    msgs.push({ user: 'Vivi', text: `⚠️ ${err.substring(0, 100)}`, time: Date.now(), avatar: '🤖', isBot: true });
-                    saveChat(chatKey, msgs);
-                    renderChat(chatKey, containerId);
+                    document.getElementById(`typing_general`)?.remove();
                 }
             } catch (e) {
-                document.getElementById(`typing_${chatKey}`)?.remove();
-                const msgs = getChat(chatKey);
-                msgs.push({ user: 'Vivi', text: '⚠️ Error de conexión. Intenta de nuevo.', time: Date.now(), avatar: '🤖', isBot: true });
-                saveChat(chatKey, msgs);
-                renderChat(chatKey, containerId);
-            } finally {
-                chatPending[chatKey] = false;
+                document.getElementById(`typing_general`)?.remove();
             }
-        }
-
-        window.sendGeneralMessage = async () => {
-            const input = $('generalChatInput');
-            const text = input.value.trim();
-            if (!text) return;
-            const msgs = getChat('general');
-            msgs.push({ user: 'Tú', text, time: Date.now(), avatar: 'T' });
-            saveChat('general', msgs);
-            input.value = '';
-            renderChat('general', 'generalChatMessages');
-
-            const systemPrompt = 'Eres "Vivi", asistente del chat general de Ciudad Viva Maipú. La plataforma gamifica la participación juvenil en plazas de Maipú: se ganan puntos (+50 pts por foto validada con IA en evento, +100 a +150 pts completando misiones, +10 pts por inscribirse), hay 5 plazas, 12 eventos (deportes, música, arte, gaming, talleres), 8 recompensas (200–600 pts) y chats por plaza. Responde en español de Chile, breve (máx 3 oraciones), amigable, con emojis ocasionales. Si te preguntan algo que no sabes, recomienda revisar la sección correspondiente.';
-            chatReplyWithGemini('general', 'generalChatMessages', systemPrompt);
         };
 
-        window.openPlazaChat = (placeId, placeName) => {
-            const key = `plaza_${placeId}`;
-            const place = places.find(p => p.id === placeId);
-            if (!localStorage.getItem(`cv_chat_${key}`)) {
-                saveChat(key, [
-                    { user: 'Vivi', text: `¡Hola! Soy Vivi 👋 Este es el chat de ${placeName}. Puedo contarte sobre la plaza, eventos cercanos o cómo llegar.`, time: Date.now(), avatar: '🤖', isBot: true }
-                ]);
-            }
-            const modalHtml = `
-                <div style="display: flex; flex-direction: column; height: 420px;">
-                    <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 10px;">
-                        <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--info), #0E7490); color: white; display: grid; place-items: center; font-size: 16px;">💬</div>
-                        <div><b style="font-size: 13px;">${placeName}</b><div style="font-size: 10px; color: var(--text-muted);">Con Vivi (IA) + comunidad</div></div>
-                    </div>
-                    <div class="chat-messages" id="plazaChatMessages" style="flex: 1;"></div>
-                    <div class="chat-input-wrap" style="border-radius: 12px; margin-top: 10px;">
-                        <input type="text" id="plazaChatInput" placeholder="Escribe un mensaje..." maxlength="300">
-                        <button id="plazaChatSend" aria-label="Enviar">➤</button>
-                    </div>
-                </div>`;
-            $('genericModalTitle').textContent = `Chat: ${placeName}`;
-            $('genericModalBody').innerHTML = modalHtml;
-            const modalEl = $('genericModal');
-            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modal.show();
-
-            const onShown = () => {
-                modalEl.removeEventListener('shown.bs.modal', onShown);
-                renderChat(key, 'plazaChatMessages');
-
-                const send = () => {
-                    const input = $('plazaChatInput');
-                    const text = input.value.trim();
-                    if (!text) return;
-                    const msgs = getChat(key);
-                    msgs.push({ user: 'Tú', text, time: Date.now(), avatar: 'T' });
-                    saveChat(key, msgs);
-                    input.value = '';
-                    renderChat(key, 'plazaChatMessages');
-
-                    const systemPrompt = `Eres "Vivi", asistente del chat de la plaza "${placeName}" en Ciudad Viva Maipú. Estás en el sector: ${place.address}. Categoría principal: ${place.category}. Descripción: ${place.desc}. Características: ${place.features.join(', ')}. Responde breve (máx 3 oraciones), amigable, con emojis ocasionales, en español de Chile. Si preguntan por eventos de la plaza, sugiere revisar la sección "Agenda Local" o "Calendario".`;
-                    chatReplyWithGemini(key, 'plazaChatMessages', systemPrompt);
-                };
-
-                const input = $('plazaChatInput');
-                const sendBtn = $('plazaChatSend');
-                if (input) input.addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
-                if (sendBtn) sendBtn.addEventListener('click', send);
-            };
-            modalEl.addEventListener('shown.bs.modal', onShown);
-        };
-
-        // ============================================================
-        //  ASISTENTE VIRTUAL
-        // ============================================================
-        let assistantHistory = [];
-        $('assistantFab').onclick = () => { $('assistantPanel').classList.toggle('open'); };
-        $('assistantClose').onclick = () => $('assistantPanel').classList.remove('open');
-
-        window.quickAsk = (q) => { $('assistantInput').value = q; sendAssistantMessage(); };
-
+        // Chat individual con Vivi (Asistente flotante)
         window.sendAssistantMessage = async () => {
             const input = $('assistantInput');
             const text = input.value.trim();
@@ -1468,30 +1426,35 @@
             if (!GEMINI_PROXY_URL) { addAssistantMsg('bot', '⚠️ No tengo configurado el servidor proxy.'); return; }
             input.value = '';
             addAssistantMsg('user', text);
-            assistantHistory.push({ role: 'user', parts: [{ text }] });
+            
             const typing = document.createElement('div');
             typing.className = 'assistant-msg bot';
             typing.id = 'typingIndicator';
             typing.textContent = '🧠 Pensando...';
             $('assistantMessages').appendChild(typing);
             $('assistantMessages').scrollTop = $('assistantMessages').scrollHeight;
+            
             try {
+                const systemPrompt = `Eres "Vivi", la asistente virtual de Ciudad Viva Maipú, una plataforma que gamifica la participación juvenil.
+                Responde de forma muy precisa y amigable, en español de Chile (máx 3 oraciones). 
+                NO digas "revisa la sección X" ni mandes al usuario a buscar, tú tienes la info exacta. Usa este contexto:\n${getAppContext()}`;
+
+                const contents = [
+                    { role: 'user', parts: [{ text: systemPrompt }] },
+                    { role: 'model', parts: [{ text: 'Entendido. Responderé con datos exactos.' }] },
+                    { role: 'user', parts: [{ text }] }
+                ];
+
                 const response = await fetch(GEMINI_URL(), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [
-                            { role: 'user', parts: [{ text: 'Contexto: Eres "Vivi", asistente virtual de Ciudad Viva Maipú, una plataforma que gamifica la participación juvenil en plazas de Maipú. Puntos: +50 por foto validada con IA en evento, +100 a +150 por misiones, +10 por inscripción. Recompensas desde 200 a 600 pts. 5 plazas, 12 eventos (deportes, cultura, gaming, ferias), chats comunitarios generales y por plaza. Responde breve (máx 3 oraciones), amigable, juvenil, con emojis ocasionales, en español de Chile. No inventes datos.' }] },
-                            ...assistantHistory
-                        ]
-                    })
+                    body: JSON.stringify({ contents })
                 });
                 const data = await response.json();
                 typing.remove();
                 if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
                     const reply = data.candidates[0].content.parts[0].text.trim();
                     addAssistantMsg('bot', reply);
-                    assistantHistory.push({ role: 'model', parts: [{ text: reply }] });
                 } else {
                     addAssistantMsg('bot', 'Ups, no pude procesar tu mensaje. Intenta de nuevo.');
                 }
@@ -1509,6 +1472,106 @@
             $('assistantMessages').scrollTop = $('assistantMessages').scrollHeight;
         }
         $('assistantInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAssistantMessage(); });
+
+        // Chats por Plaza (con Vivi)
+        window.openPlazaChat = (placeId, placeName) => {
+            const key = `plaza_${placeId}`;
+            const place = places.find(p => p.id === placeId);
+            if (!localStorage.getItem(`cv_chat_${key}`)) {
+                saveChat(key, [
+                    { user: 'Vivi', text: `¡Hola! Soy Vivi 👋 Este es el chat de ${placeName}. Puedo contarte sobre la plaza, eventos cercanos o cómo llegar.`, time: Date.now(), avatar: '🤖', isBot: true }
+                ]);
+            }
+            const modalHtml = `
+                <div style="display: flex; flex-direction: column; height: 420px;">
+                    <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 10px;">
+                        <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--info), #0E7490); color: white; display: grid; place-items: center; font-size: 16px;">💬</div>
+                        <div><b style="font-size: 13px;">${placeName}</b><div style="font-size: 10px; color: var(--text-muted);">Con Vivi (IA)</div></div>
+                    </div>
+                    <div class="chat-messages" id="plazaChatMessages" style="flex: 1;"></div>
+                    <div class="chat-input-wrap" style="border-radius: 12px; margin-top: 10px;">
+                        <input type="text" id="plazaChatInput" placeholder="Escribe un mensaje..." maxlength="300">
+                        <button id="plazaChatSend" aria-label="Enviar">➤</button>
+                    </div>
+                </div>`;
+            $('genericModalTitle').textContent = `Chat: ${placeName}`;
+            $('genericModalBody').innerHTML = modalHtml;
+            const modalEl = $('genericModal');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+
+            const onShown = () => {
+                modalEl.removeEventListener('shown.bs.modal', onShown);
+                renderChat(key, 'plazaChatMessages');
+
+                const send = async () => {
+                    const input = $('plazaChatInput');
+                    const text = input.value.trim();
+                    if (!text) return;
+                    
+                    const msgs = getChat(key);
+                    msgs.push({ user: 'Tú', text, time: Date.now(), avatar: 'T' });
+                    saveChat(key, msgs);
+                    input.value = '';
+                    renderChat(key, 'plazaChatMessages');
+
+                    const typing = document.createElement('div');
+                    typing.className = 'chat-msg bot';
+                    typing.id = `typing_${key}`;
+                    typing.innerHTML = `<div class="chat-msg-avatar">🤖</div><div class="chat-bubble"><div class="chat-author">Vivi 🤖</div>Escribiendo…</div>`;
+                    $('plazaChatMessages').appendChild(typing);
+                    $('plazaChatMessages').scrollTop = $('plazaChatMessages').scrollHeight;
+
+                    try {
+                        const history = getChat(key).slice(-6).map(m => ({
+                            role: m.user === 'Tú' ? 'user' : 'model',
+                            parts: [{ text: m.text }]
+                        }));
+
+                        const systemPrompt = `Eres "Vivi", la asistente del chat de la plaza "${placeName}" en Ciudad Viva Maipú. 
+                        Estás en el sector: ${place.address}. Categoría: ${place.category}. Descripción: ${place.desc}.
+                        Responde breve (máx 3 oraciones), amigable, en español de Chile. Usa este contexto de la app:\n${getAppContext()}`;
+
+                        const contents = [
+                            { role: 'user', parts: [{ text: systemPrompt }] },
+                            { role: 'model', parts: [{ text: 'Entendido.' }] },
+                            ...history
+                        ];
+
+                        const res = await fetch(GEMINI_URL(), {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents })
+                        });
+                        const data = await res.json();
+                        document.getElementById(`typing_${key}`)?.remove();
+
+                        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                            const reply = data.candidates[0].content.parts[0].text.trim();
+                            const newMsgs = getChat(key);
+                            newMsgs.push({ user: 'Vivi', text: reply, time: Date.now(), avatar: '🤖', isBot: true });
+                            saveChat(key, newMsgs);
+                            renderChat(key, 'plazaChatMessages');
+                        }
+                    } catch (e) {
+                        document.getElementById(`typing_${key}`)?.remove();
+                    }
+                };
+
+                const input = $('plazaChatInput');
+                const sendBtn = $('plazaChatSend');
+                if (input) input.addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
+                if (sendBtn) sendBtn.addEventListener('click', send);
+            };
+            modalEl.addEventListener('shown.bs.modal', onShown);
+        };
+
+        // ============================================================
+        //  ASISTENTE FLOTANTE (FAB)
+        // ============================================================
+        $('assistantFab').onclick = () => { $('assistantPanel').classList.toggle('open'); };
+        $('assistantClose').onclick = () => $('assistantPanel').classList.remove('open');
+        window.quickAsk = (q) => { $('assistantInput').value = q; sendAssistantMessage(); };
 
         // ============================================================
         //  OTROS
@@ -1559,10 +1622,6 @@
                     <div style="display: flex; gap: 10px; padding: 10px; background: var(--bg-body); border-radius: 10px; margin-bottom: 8px;">
                         <span style="font-size: 22px;">🎟️</span>
                         <div><b>+10 pts</b> · Inscríbete en un evento</div>
-                    </div>
-                    <div style="display: flex; gap: 10px; padding: 10px; background: var(--bg-body); border-radius: 10px;">
-                        <span style="font-size: 22px;">💬</span>
-                        <div><b>Bonus</b> · Participa en la comunidad y propone actividades</div>
                     </div>
                     <p style="margin-top: 14px; font-size: 12px; color: var(--text-muted);">💡 Los puntos se guardan en tu dispositivo. Puedes canjearlos desde 200 pts.</p>
                 </div>`);
